@@ -1,0 +1,41 @@
+class BindingTestController < ApplicationController
+  class_attribute :next_eval_proc
+
+  def eval
+    expression = self.class.next_eval_proc or raise "No eval expression given"
+    self.eval_result = nil
+    self.eval_error = nil
+    self.class.next_eval_proc = nil
+    begin
+      self.eval_result = instance_exec(&expression)
+    rescue RuntimeError => e
+      self.eval_error = e
+    end
+    unless performed?
+      # render nothing: true
+      head :ok, content_type: "text/html"
+    end
+  end
+
+  attr_accessor :eval_result, :eval_error
+
+  def text
+    render plain: 'text from controller'
+  end
+
+  def redirect0
+    up.emit('event0')
+    redirect_to action: :redirect1
+  end
+
+  def redirect1
+    up.emit('event1')
+    up.cache.clear
+    redirect_to action: :redirect2
+  end
+
+  def redirect2
+    render plain: up.target
+  end
+
+end

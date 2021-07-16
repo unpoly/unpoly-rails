@@ -1,0 +1,6 @@
+/.idea
+/spec/dummy/log
+.byebug_history
+/assets/unpoly/*.css
+/assets/unpoly/*.js
+/pkg
