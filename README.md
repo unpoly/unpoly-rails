@@ -1,17 +1,54 @@
 unpoly-rails: Ruby on Rails bindings for Unpoly
 ===============================================
 
-[Unpoly](https://unpoly.com) is a backend-agnostic [unobtrusive JavaScript](https://en.wikipedia.org/wiki/Unobtrusive_JavaScript) framework.
+[Unpoly](https://unpoly.com) is an [unobtrusive JavaScript](https://en.wikipedia.org/wiki/Unobtrusive_JavaScript) framework for server-side web applications.
 
-`unpoly-rails` implements the [optional server protocol](https://unpoly.com/up.protocol] to give [Ruby on Rails](http://rubyonrails.org/) applications some convenience methods to communicate with an Unpoly-enhanced frontend.
-
-For Rails applications using the [Asset Pipeline](https://guides.rubyonrails.org/asset_pipeline.html), `unpoly-rails` also ships the latest Unpoly JavaScript and CSS files. If you're using Webpacker you can consume the [npm package](https://unpoly.com/install/npm) instead.
+The `unpoly-rails` gem helps integrating Unpoly with [Ruby on Rails](https://rubyonrails.org/) applications.
 
 
-Features
---------
+Installing frontend assets
+--------------------------
 
-The methods documented below are available in all controllers, views and helpers.
+### With Webpacker
+
+If you're using [Webpacker](https://edgeguides.rubyonrails.org/webpacker.html), install the [`unpoly` npm package](https://unpoly.com/install/npm) to get Unpoly's frontend files.
+
+Now `import` Unpoly from your `application.js` pack:
+
+```js
+import 'unpoly/unpoly.js'
+import 'unpoly/unpoly.css'
+```
+
+You may need to import [additional files](https://unpoly.com/install), e.g. when migrating from an old Unpoly version.
+
+
+### With the Asset Pipeline
+
+If you're using the [Asset Pipeline](https://guides.rubyonrails.org/asset_pipeline.html), this `unpoly-rails` gem also contains Unpoly's frontend files. The files are automatically added to the Asset Pipeline's <a href="https://guides.rubyonrails.org/asset_pipeline.html#search-paths">search path</a>.
+
+Add the following line to your `application.js` manifest:
+
+```js
+//= require unpoly
+```
+
+Also add the following line to your `application.css` manifest:
+
+```css
+/*
+ *= require unpoly
+ */
+```
+
+You may need to require [additional files](https://unpoly.com/install), e.g. when migrating from an old Unpoly version.
+
+
+Server protocol helpers
+-----------------------
+
+This `unpoly-rails` gem implements the <a href="https://unpoly.com/up.protocol">optional server protocol</a> by providing the following helper methods to your controllers, views and helpers.
+
 
 ### Detecting a fragment update
 
