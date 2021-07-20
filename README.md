@@ -6,6 +6,18 @@ unpoly-rails: Ruby on Rails bindings for Unpoly
 The `unpoly-rails` gem helps integrating Unpoly with [Ruby on Rails](https://rubyonrails.org/) applications.
 
 
+Installing the gem
+------------------
+
+Add the following line to your `Gemfile`:
+
+```ruby
+gem 'unpoly-rails'
+```
+
+Now run `bundle install` and restart your development server.
+
+
 Installing frontend assets
 --------------------------
 
