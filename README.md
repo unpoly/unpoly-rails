@@ -119,7 +119,7 @@ This will render a 200 OK response with a header `X-Up-Target: none` and an empt
 
 You may render nothing with a different HTTP status by passing a `:status` option:
 
-```
+```ruby
 up.render_nothing(status: :bad_request)
 ```
 
@@ -210,20 +210,20 @@ up.reload_from_time # returns a Time object
 The server can compare the time from the request with the time of the last data update.
 If no more recent data is available, the server can [render nothing](/X-Up-Target):
 
-  ```ruby
-  class MessagesController < ApplicationController
+```ruby
+class MessagesController < ApplicationController
 
-    def index
-      if up.reload_from_time == current_user.last_message_at
-        up.render_nothing
-      else
-        @messages = current_user.messages.order(time: :desc).to_a
-        render 'index'
-      end
+  def index
+    if up.reload_from_time == current_user.last_message_at
+      up.render_nothing
+    else
+      @messages = current_user.messages.order(time: :desc).to_a
+      render 'index'
     end
-
   end
-  ```
+
+end
+```
 
 Only rendering when needed saves <b>CPU time</b> on your server, which spends most of its response time rendering HTML.
 
@@ -267,7 +267,7 @@ up.context.delete(:foo)
 
 You may replace the entire context by calling `up.context.replace`: 
 
-```
+```ruby
 context_from_file = JSON.parse(File.read('context.json))
 up.context.replace(context_from_file)
 ```
