@@ -1,3 +1,6 @@
+require 'json'
+require "active_support/all"
+
 module Unpoly
   module Rails
     class Release
@@ -61,7 +64,12 @@ namespace :gem do
 
   desc 'Copy symlinked development assets for packaging'
   task :copy_assets do
-    Dir['assets/unpoly-dev/*.{css,js}'].each do |path|
+    # Remove files from a previous build
+    Dir.glob('assets/unpoly/*.{css,js}').each do |file|
+      File.delete(file)
+    end
+
+    Dir['assets/unpoly-dev/unpoly*.{css,js}'].each do |path|
       FileUtils.cp path, 'assets/unpoly'
     end
   end
