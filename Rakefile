@@ -57,7 +57,7 @@ namespace :gem do
       raise "Gem version (#{gem_version}) does not match npm version (#{npm_version})"
     end
   end
-  Rake::Task['gem:release'].enhance ['gem:ensure_synced_versions']
+  Rake::Task['gem:build'].enhance ['gem:ensure_synced_versions']
 
   desc 'Copy symlinked development assets for packaging'
   task :copy_assets do
