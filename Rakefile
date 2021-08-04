@@ -50,7 +50,6 @@ namespace :gem do
 
   desc 'Ensure that package.js and version.rb have the same version'
   task :ensure_synced_versions do
-    require 'lib/unpoly-rails/version'
     gem_version = Unpoly::Rails::Release.gem_version
     npm_version = Unpoly::Rails::Release.npm_version
 
