@@ -49,7 +49,7 @@ namespace :gem do
       exit
     end
   end
-  Rake::Task['gem:release'].enhance ['gem:confirm']
+  Rake::Task['gem:release:rubygem_push'].enhance ['gem:confirm']
 
   desc 'Ensure that package.js and version.rb have the same version'
   task :ensure_synced_versions do
