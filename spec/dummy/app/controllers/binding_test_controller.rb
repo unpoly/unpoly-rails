@@ -38,4 +38,10 @@ class BindingTestController < ApplicationController
     render plain: up.target
   end
 
+  private
+
+  def content_security_policy_nonce
+    'secret'
+  end
+
 end

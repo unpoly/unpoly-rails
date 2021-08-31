@@ -309,11 +309,24 @@ module Unpoly
         !!reload_from_time
       end
 
+      def safe_callback(code)
+        # Rails 5+
+        if (nonce = content_security_policy_nonce.presence)
+          "nonce-#{nonce} #{code}"
+        else
+          code
+        end
+      end
+
       private
 
       attr_reader :controller
 
       delegate :request, :params, :response, to: :controller
+
+      def content_security_policy_nonce
+        controller.send(:content_security_policy_nonce)
+      end
 
       def test_target(frontend_target, tested_target)
         # We must test whether the frontend has passed us a target.

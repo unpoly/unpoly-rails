@@ -242,6 +242,31 @@ Only rendering when needed saves <b>CPU time</b> on your server, which spends mo
 This also reduces the <b>bandwidth cost</b> for a request/response exchange to **~1 KB**.
 
 
+### Allowing callbacks with a strict CSP
+
+When your Content Security Policy disallows `eval()`, Unpoly cannot directly run callbacks HTML attributes. This affects `[up-]` attributes like `[up-on-loaded]` or `[up-on-accepted]`. See [Unpoly's CSP guide](https://unpoly.com/csp) for details.
+
+The following callback would crash the fragment update with an error like `Uncaught EvalError: call to Function() blocked by CSP`:
+
+```ruby
+link_to 'Click me', '/path, 'up-follow': true, 'up-on-loaded': "alert()"
+```
+
+Unpoly lets your work around this by prefixing your callback with your response's [CSP nonce](https://content-security-policy.com/nonce/):
+
+```ruby
+link_to 'Click me', '/path', 'up-follow': true, 'up-on-loaded': 'nonce-kO52Iphm8BAVrcdGcNYjIA== alert()')
+```
+
+To keep your callbacks compact, you may use the `up.safe_callback` helper for this:
+
+```ruby
+link_to 'Click me', '/path, 'up-follow': true, 'up-on-loaded': up.safe_callback("alert()")
+```
+
+For this to work you must also include the `<meta name="csp-nonce">` tag in the `<head>` of your initial page. Rails has a [`csp_meta_tag`](https://api.rubyonrails.org/classes/ActionView/Helpers/CspHelper.html#method-i-csp_meta_tag) helper for that purpose.
+
+
 ### Working with context
 
 Calling `up.context` will return the [context](https://unpoly.com/up.context) object of the targeted layer.

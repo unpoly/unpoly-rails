@@ -910,6 +910,18 @@ describe Unpoly::Rails::Controller, type: :request do
 
   end
 
+  describe 'up.safe_callback' do
+
+    it 'prepends the CSP nonce to the given JavaScript string' do
+      result = controller_eval do
+        up.safe_callback('alert()')
+      end
+
+      expect(result).to eq('nonce-secret alert()')
+    end
+
+  end
+
   describe 'redirect_to' do
 
     it 'preserves Unpoly-related headers for the redirect' do
