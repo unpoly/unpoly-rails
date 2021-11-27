@@ -301,12 +301,18 @@ module Unpoly
         @clear_cache = value
       end
 
-      def reload_from_time
-        reload_from_time_from_request
+      def reload_from_time(deprecation: true)
+        if deprecation
+          ActiveSupport::Deprecation.warn("up.reload_from_time is deprecated. Use conditional GETs instead: https://guides.rubyonrails.org/caching_with_rails.html#conditional-get-support")
+        end
+        reload_from_time_from_request || if_modified_since
       end
 
-      def reload?
-        !!reload_from_time
+      def reload?(deprecation: true)
+        if deprecation
+          ActiveSupport::Deprecation.warn("up.reload? is deprecated. Use conditional GETs instead: https://guides.rubyonrails.org/caching_with_rails.html#conditional-get-support")
+        end
+        !!reload_from_time(deprecation: false)
       end
 
       def safe_callback(code)
@@ -323,6 +329,12 @@ module Unpoly
       attr_reader :controller
 
       delegate :request, :params, :response, to: :controller
+
+      def if_modified_since
+        if (header = request.headers['If-Modified-Since'])
+          Time.httpdate(header)
+        end
+      end
 
       def content_security_policy_nonce
         controller.send(:content_security_policy_nonce)
@@ -363,7 +375,6 @@ module Unpoly
         params[context_changes_param_name]    = serialized_context_changes
         params[events_param_name]             = serialized_events
         params[clear_cache_param_name]        = serialized_clear_cache
-        params[reload_from_time_param_name]   = serialized_reload_from_time
 
         # Don't send empty response headers.
         params = params.select { |_key, value| value.present? }

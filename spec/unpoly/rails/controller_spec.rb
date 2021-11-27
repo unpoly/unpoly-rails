@@ -886,7 +886,15 @@ describe Unpoly::Rails::Controller, type: :request do
 
     include_examples 'time field',
       header: 'X-Up-Reload-From-Time',
-      reader: -> { up.reload_from_time }
+      reader: -> { up.reload_from_time(deprecation: false) }
+
+    it 'falls back to a Time parsed from a If-Modified-Since header' do
+      result = controller_eval(headers: { 'If-Modified-Since': 'Wed, 21 Oct 2015 07:28:00 GMT' }) do
+        up.reload_from_time(deprecation: false)
+      end
+
+      expect(result).to eq(Time.parse('2015-10-21 07:28:00 GMT'))
+    end
 
   end
 
@@ -894,7 +902,7 @@ describe Unpoly::Rails::Controller, type: :request do
 
     it 'returns true if an X-Up-Reload-From-Time header is given' do
       result = controller_eval(headers: { 'X-Up-Reload-From-Time': '1608714891' }) do
-        up.reload?
+        up.reload?(deprecation: false)
       end
 
       expect(result).to eq(true)
@@ -902,7 +910,7 @@ describe Unpoly::Rails::Controller, type: :request do
 
     it 'returns false if no X-Up-Reload-From-Time header is given' do
       result = controller_eval do
-        up.reload?
+        up.reload?(deprecation: false)
       end
 
       expect(result).to eq(false)

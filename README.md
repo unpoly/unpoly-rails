@@ -207,39 +207,29 @@ end
 
 ### Detecting a fragment reload
 
-To test whether the current request was made to [reload](https://unpoly.com/up.reload) or [poll](https://unpoly.com/up-poll) a fragment:
+When Unpoly [reloads](https://unpoly.com/up.reload) or [polls](https://unpoly.com/up-poll) a fragment, the server will often render the same HTML. You can configure your controller actions to only render HTML if the underlying content changed since an earlier request.
 
-```ruby
-up.reload?
-```
+Only rendering when needed saves <b>CPU time</b> on your server, which spends most of its response time rendering HTML. This also reduces the <b>bandwidth cost</b> for a request/response exchange to **~1 KB**.
 
-You also retrieve the time when the fragment being reloaded was previously inserted into the DOM:
+When a fragment is reloaded, Unpoly sends an [`If-Modified-Since`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-Modified-Since) request header with the fragment's earlier [`Last-Modified`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Last-Modified) time. It also sends an [`If-None-Match`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-None-Match) header with the fragment's earlier [`ETag`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ETag).
 
-```ruby
-up.reload_from_time # returns a Time object
-```
-
-The server can compare the time from the request with the time of the last data update.
-If no more recent data is available, the server can [render nothing](/X-Up-Target):
+Rails' [conditional GET support](https://guides.rubyonrails.org/caching_with_rails.html#conditional-get-support) lets you compare and set modification times and ETags with methods like `#fresh_when` or `#stale?`:
 
 ```ruby
 class MessagesController < ApplicationController
 
   def index
-    if up.reload_from_time == current_user.last_message_at
-      up.render_nothing
-    else
-      @messages = current_user.messages.order(time: :desc).to_a
-      render 'index'
-    end
+    @messages = current_user.messages.order(time: :desc)
+
+    # If the request's ETag and last modification time matches the given `@messages`,
+    # does not render and send a a `304 Not Modified` response.
+    # If the request's ETag or last modification time does not match, we will render
+    # the `index` view with fresh `ETag` and `Last-Modified` headers.
+    fresh_when(@messages)
   end
 
 end
 ```
-
-Only rendering when needed saves <b>CPU time</b> on your server, which spends most of its response time rendering HTML.
-
-This also reduces the <b>bandwidth cost</b> for a request/response exchange to **~1 KB**.
 
 
 ### Allowing callbacks with a strict CSP
