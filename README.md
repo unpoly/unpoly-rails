@@ -109,7 +109,7 @@ The frontend will use the server-provided target for both successful (HTTP statu
 
 Sometimes it's OK to render nothing, e.g. when you know that the current layer is to be closed.
 
-In this case you may call `up.render_nothing`:
+In this case use `head(:no_content)`:
 
 ```ruby
 class NotesController < ApplicationController
@@ -118,21 +118,13 @@ class NotesController < ApplicationController
     if @note.save
       if up.layer.overlay?
         up.accept_layer(@note.id)
-        up.render_nothing
+        head :no_content
       else
         redirect_to @note
       end
     end
   end
 end
-```
-
-This will render a 200 OK response with a header `X-Up-Target: none` and an empty body.
-
-You may render nothing with a different HTTP status by passing a `:status` option:
-
-```ruby
-up.render_nothing(status: :bad_request)
 ```
 
 

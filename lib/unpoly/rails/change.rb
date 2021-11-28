@@ -82,8 +82,10 @@ module Unpoly
         test_target(target, tested_target)
       end
 
-      def render_nothing(options = {})
-        status = options.fetch(:status, :ok)
+      def render_nothing(status: :no_content, deprecation: true)
+        if deprecation
+          ActiveSupport::Deprecation.warn("up.render_nothing is deprecated. Use head(:no_content) instead.")
+        end
         self.target = ':none'
         controller.head(status)
       end

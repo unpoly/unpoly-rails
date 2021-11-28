@@ -170,7 +170,7 @@ describe Unpoly::Rails::Controller, type: :request do
 
     it 'renders an empty response' do
       controller_eval do
-        up.render_nothing
+        up.render_nothing(deprecation: false)
       end
 
       expect(response.body).to be_blank
@@ -178,26 +178,18 @@ describe Unpoly::Rails::Controller, type: :request do
 
     it 'sets an X-Up-Target: :none header to prevent matching errors on the client' do
       controller_eval do
-        up.render_nothing
+        up.render_nothing(deprecation: false)
       end
 
       expect(response.headers['X-Up-Target']).to eq(':none')
     end
 
-    it 'responds with a 200 OK status' do
+    it 'responds with a 204 No Content status' do
       controller_eval do
-        up.render_nothing
+        up.render_nothing(deprecation: false)
       end
 
-      expect(response.status).to eq(200)
-    end
-
-    it 'allows to pass a different status code with :status option' do
-      controller_eval do
-        up.render_nothing(status: :bad_request)
-      end
-
-      expect(response.status).to eq(400)
+      expect(response.status).to eq(204)
     end
 
   end
