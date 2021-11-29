@@ -109,7 +109,7 @@ The frontend will use the server-provided target for both successful (HTTP statu
 
 Sometimes it's OK to render nothing, e.g. when you know that the current layer is to be closed.
 
-In this case use `head(:no_content)`:
+In this case send a `204 No Content` or `304 Not Modified`:
 
 ```ruby
 class NotesController < ApplicationController
@@ -203,9 +203,9 @@ When Unpoly [reloads](https://unpoly.com/up.reload) or [polls](https://unpoly.co
 
 Only rendering when needed saves <b>CPU time</b> on your server, which spends most of its response time rendering HTML. This also reduces the <b>bandwidth cost</b> for a request/response exchange to **~1 KB**.
 
-When a fragment is reloaded, Unpoly sends an [`If-Modified-Since`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-Modified-Since) request header with the fragment's earlier [`Last-Modified`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Last-Modified) time. It also sends an [`If-None-Match`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-None-Match) header with the fragment's earlier [`ETag`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ETag).
+When a fragment is reloaded, Unpoly sends an [`If-Modified-Since`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-Modified-Since) request header with the fragment's earlier [`Last-Modified`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Last-Modified) time.
 
-Rails' [conditional GET support](https://guides.rubyonrails.org/caching_with_rails.html#conditional-get-support) lets you compare and set modification times and ETags with methods like `#fresh_when` or `#stale?`:
+Rails' [conditional GET support](https://guides.rubyonrails.org/caching_with_rails.html#conditional-get-support) lets you compare and set modification times and ETags with methods like [`#fresh_when`](https://api.rubyonrails.org/classes/ActionController/ConditionalGet.html#method-i-fresh_when) or [`#stale?`](https://api.rubyonrails.org/classes/ActionController/ConditionalGet.html#method-i-stale-3F):
 
 ```ruby
 class MessagesController < ApplicationController
@@ -213,10 +213,10 @@ class MessagesController < ApplicationController
   def index
     @messages = current_user.messages.order(time: :desc)
 
-    # If the request's ETag and last modification time matches the given `@messages`,
+    # If the request's last modification time matches `@messages.maximum(:updated_at)`,
     # does not render and send a a `304 Not Modified` response.
-    # If the request's ETag or last modification time does not match, we will render
-    # the `index` view with fresh `ETag` and `Last-Modified` headers.
+    # If the request's last modification time is stale, we will render
+    # the `index` view with a fresh `Last-Modified` header.
     fresh_when(@messages)
   end
 
