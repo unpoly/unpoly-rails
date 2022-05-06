@@ -18,7 +18,7 @@ module Unpoly
 
         module ClassMethods
 
-          def field(field, method: nil, response_header_name: nil)
+          def field(field, method: nil, response_header_name: nil, request_header_name: nil)
             method ||= field.name
 
             define_method "#{method}_field" do
@@ -26,7 +26,8 @@ module Unpoly
             end
 
             define_method "#{method}_from_request_headers" do
-              raw_value = request.headers[field.header_name]
+              header_name = request_header_name || field.header_name
+              raw_value = request.headers[header_name]
               field.parse(raw_value)
             end
 

@@ -31,6 +31,8 @@ module Unpoly
           raise NotImplementedError
         end
 
+        ##
+        # A string value, serialized as itself.
         class String < Field
 
           def parse(raw)
@@ -38,44 +40,41 @@ module Unpoly
           end
 
           def stringify(value)
-            value.to_s
+            unless value.nil?
+              value.to_s
+            end
           end
 
         end
 
+        ##
+        # An array of strings, serialized as JSON.
         class SeparatedValues < Field
 
-          def initialize(name, separator = ' ')
+          def initialize(name, separator: ' ', default: nil)
             super(name)
             @separator = separator
+            @default = default
           end
 
           def parse(raw)
             if raw
-              raw.split(separator)
+              raw.split(@separator)
+            elsif @default
+              instance_exec(&@default)
             end
           end
 
           def stringify(value)
-            if value
-              value.join(separator)
+            unless value.nil?
+              value.join(@separator)
             end
           end
 
         end
 
-        class Boolean < Field
-
-          def parse(raw)
-            raw == 'true'
-          end
-
-          def stringify(value)
-            value.to_json
-          end
-
-        end
-
+        ##
+        # A date and time value, serialized as the number of seconds since the epoch.
         class Time < Field
 
           def parse(raw)
@@ -85,20 +84,27 @@ module Unpoly
           end
 
           def stringify(value)
-            if value
+            unless value.nil?
               value.to_i
             end
           end
 
         end
 
+        ##
+        # A hash of values, serialized as JSON.
         class Hash < Field
+
+          def initialize(name, default: nil)
+            super(name)
+            @default = default
+          end
 
           def parse(raw)
             if raw.present?
               result = ActiveSupport::JSON.decode(raw)
-            else
-              result = {}
+            elsif @default
+              result = instance_exec(&@default)
             end
 
             if result.is_a?(::Hash)
@@ -109,25 +115,36 @@ module Unpoly
           end
 
           def stringify(value)
-            ActiveSupport::JSON.encode(value)
+            unless value.nil?
+              ActiveSupport::JSON.encode(value)
+            end
           end
 
         end
 
+        ##
+        # An array of values, serialized as JSON.
         class Array < Field
+
+          def initialize(name, default: nil)
+            super(name)
+            @default = default
+          end
 
           def parse(raw)
             if raw.present?
               result = ActiveSupport::JSON.decode(raw)
-            else
-              result = []
+            elsif @default
+              result = instance_exec(&@default)
             end
 
             result
           end
 
           def stringify(value)
-            ActiveSupport::JSON.encode(value)
+            unless value.nil?
+              ActiveSupport::JSON.encode(value)
+            end
           end
 
         end

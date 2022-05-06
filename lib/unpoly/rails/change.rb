@@ -17,13 +17,13 @@ module Unpoly
       field Field::String.new(:version)
       field Field::String.new(:target)
       field Field::String.new(:fail_target)
-      field Field::String.new(:validate)
+      field Field::SeparatedValues.new(:validate_names), request_header_name: 'X-Up-Validate'
       field Field::String.new(:mode)
       field Field::String.new(:fail_mode)
-      field Field::Hash.new(:context), method: :input_context
-      field Field::Hash.new(:fail_context), method: :input_fail_context
-      field Field::Hash.new(:context_changes), response_header_name: 'X-Up-Context'
-      field Field::Array.new(:events)
+      field Field::Hash.new(:context, default: -> { {} }), method: :input_context
+      field Field::Hash.new(:fail_context, default: -> { {} }), method: :input_fail_context
+      field Field::Hash.new(:context_changes, default: -> { {} }), response_header_name: 'X-Up-Context'
+      field Field::Array.new(:events, default: -> { [] })
       field Field::String.new(:clear_cache)
       field Field::Time.new(:reload_from_time)
 
@@ -134,23 +134,29 @@ module Unpoly
       end
 
       ##
+      # If the current form submission is a [validation](https://unpoly.com/input-up-validate),
+      # this returns the name attributes of the form fields that has triggered
+      # the validation.
+      #
+      # Note that multiple validating form fields may be batched into a single request.
+      def validate_names
+        validate_names_from_request
+      end
+
+      memoize def validate_name
+        if validating?
+          validates_names.first
+        end
+      end
+
+      ##
       # Returns whether the current form submission should be
       # [validated](https://unpoly.com/input-up-validate) (and not be saved to the database).
       def validate?
-        validate.present?
+        validate_names.present?
       end
 
       alias validating? validate?
-
-      ##
-      # If the current form submission is a [validation](https://unpoly.com/input-up-validate),
-      # this returns the name attribute of the form field that has triggered
-      # the validation.
-      memoize def validate
-        validate_from_request
-      end
-
-      alias validate_name validate
 
       ##
       # TODO: Docs
@@ -369,7 +375,7 @@ module Unpoly
         params[version_param_name]            = serialized_version
         params[target_param_name]             = serialized_target
         params[fail_target_param_name]        = serialized_fail_target
-        params[validate_param_name]           = serialized_validate
+        params[validate_names_param_name]     = serialized_validate_names
         params[mode_param_name]               = serialized_mode
         params[fail_mode_param_name]          = serialized_fail_mode
         params[input_context_param_name]      = serialized_input_context

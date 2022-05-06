@@ -197,6 +197,13 @@ class UsersController < ApplicationController
 end
 ```
 
+You may also access the [names of the fields that triggered the validation request](https://unpoly.com/X-Up-Validate):
+
+```ruby
+up.validate_names # => ['email', 'password']
+```
+
+
 ### Detecting a fragment reload
 
 When Unpoly [reloads](https://unpoly.com/up.reload) or [polls](https://unpoly.com/up-poll) a fragment, the server will often render the same HTML. You can configure your controller actions to only render HTML if the underlying content changed since an earlier request.
@@ -222,6 +229,7 @@ class MessagesController < ApplicationController
 
 end
 ```
+
 
 
 ### Allowing callbacks with a strict CSP

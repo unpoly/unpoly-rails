@@ -57,6 +57,18 @@ describe Unpoly::Rails::Controller, type: :request do
     end
   end
 
+  shared_examples_for 'separated values field' do |reader:, header:|
+    it "returns a space-separated list of values from the #{header} request header" do
+      result = controller_eval(headers: { header => 'foo bar' }, &reader)
+      expect(result).to eq ['foo', 'bar']
+    end
+
+    it "returns nil if no #{header} request header is set" do
+      result = controller_eval(&reader)
+      expect(result).to be_nil
+    end
+  end
+
   shared_examples_for 'hash field' do |reader:, header:|
     it "returns value of the #{header} request header, parsed as JSON" do
       result = controller_eval(headers: { header => '{ "foo": "bar" }'}, &reader)
@@ -396,6 +408,20 @@ describe Unpoly::Rails::Controller, type: :request do
       expect(result).to eq(true)
     end
 
+    it 'returns true the request is an Unpoly validation call for multiple field names' do
+      result = controller_eval(headers: { 'X-Up-Validate' => 'user[email] user[password]' }) do
+        up.validate?
+      end
+      expect(result).to eq(true)
+    end
+
+    it 'returns true the request is an Unpoly validation call for unknown field names' do
+      result = controller_eval(headers: { 'X-Up-Validate' => ':unknown' }) do
+        up.validate?
+      end
+      expect(result).to eq(true)
+    end
+
     it 'returns false if the request is not an Unpoly validation call' do
       result = controller_eval do
         up.validate?
@@ -405,11 +431,11 @@ describe Unpoly::Rails::Controller, type: :request do
 
   end
 
-  describe 'up.validate' do
+  describe 'up.validate_names' do
 
-    it_behaves_like 'string field',
+    it_behaves_like 'separated values field',
       header: 'X-Up-Validate',
-      reader: -> { up.validate }
+      reader: -> { up.validate_names }
 
   end
 
@@ -471,7 +497,7 @@ describe Unpoly::Rails::Controller, type: :request do
 
       expect(response.headers['X-Up-Context']).to be_nil
     end
-    
+
     it 'sends mutated sub-arrays as an X-Up-Context response header' do
       controller_eval(headers: { 'X-Up-Context': { foo: [1, 2, 3] }.to_json }) do
         up.context[:foo] << 4
