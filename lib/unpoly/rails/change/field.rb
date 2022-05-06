@@ -61,7 +61,7 @@ module Unpoly
             if raw.present?
               ::Time.at(raw.to_i)
             end
-            end
+          end
 
           def stringify(value)
             if value

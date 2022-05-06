@@ -18,8 +18,8 @@ module Unpoly
 
         module ClassMethods
 
-          def field(name, type, method: name, response_header_name: nil)
-            field = type.new(name)
+          def field(field, method: nil, response_header_name: nil)
+            method ||= field.name
 
             define_method "#{method}_field" do
               field

@@ -14,18 +14,18 @@ module Unpoly
       end
 
       # Generate helpers to get, set and cast fields in request and response headers.
-      field :version, Field::String
-      field :target, Field::String
-      field :fail_target, Field::String
-      field :validate, Field::String
-      field :mode, Field::String
-      field :fail_mode, Field::String
-      field :context, Field::Hash, method: :input_context
-      field :fail_context, Field::Hash, method: :input_fail_context
-      field :context_changes, Field::Hash, response_header_name: 'X-Up-Context'
-      field :events, Field::Array
-      field :clear_cache, Field::String
-      field :reload_from_time, Field::Time
+      field Field::String.new(:version)
+      field Field::String.new(:target)
+      field Field::String.new(:fail_target)
+      field Field::String.new(:validate)
+      field Field::String.new(:mode)
+      field Field::String.new(:fail_mode)
+      field Field::Hash.new(:context), method: :input_context
+      field Field::Hash.new(:fail_context), method: :input_fail_context
+      field Field::Hash.new(:context_changes), response_header_name: 'X-Up-Context'
+      field Field::Array.new(:events)
+      field Field::String.new(:clear_cache)
+      field Field::Time.new(:reload_from_time)
 
       ##
       # Returns whether the current request is an
