@@ -43,6 +43,27 @@ module Unpoly
 
         end
 
+        class SeparatedValues < Field
+
+          def initialize(name, separator = ' ')
+            super(name)
+            @separator = separator
+          end
+
+          def parse(raw)
+            if raw
+              raw.split(separator)
+            end
+          end
+
+          def stringify(value)
+            if value
+              value.join(separator)
+            end
+          end
+
+        end
+
         class Boolean < Field
 
           def parse(raw)
