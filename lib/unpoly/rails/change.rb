@@ -243,19 +243,21 @@ module Unpoly
       end
 
       def after_action
-        write_events_to_response_headers
+        no_vary do
+          write_events_to_response_headers
 
-        write_clear_cache_to_response_headers
+          write_clear_cache_to_response_headers
 
-        if context_changes.present?
-          write_context_changes_to_response_headers
-        end
+          if context_changes.present?
+            write_context_changes_to_response_headers
+          end
 
-        if target_changed?
-          # Only write the target to the response if it has changed.
-          # The client might have a more abstract target like :main
-          # that we don't want to override with an echo of the first match.
-          write_target_to_response_headers
+          if target_changed?
+            # Only write the target to the response if it has changed.
+            # The client might have a more abstract target like :main
+            # that we don't want to override with an echo of the first match.
+            write_target_to_response_headers
+          end
         end
       end
 

@@ -29,12 +29,14 @@ class BindingTestController < ApplicationController
   end
 
   def redirect1
+    up.mode
     up.emit('event1')
     up.cache.clear
     redirect_to action: :redirect2
   end
 
   def redirect2
+    up.fail_mode
     render plain: up.target
   end
 

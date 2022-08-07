@@ -33,6 +33,24 @@ describe Unpoly::Rails::Controller, type: :request do
     end
   end
 
+  matcher :vary_exactly_by do |*expected_vary_headers|
+    match do |response|
+      actual_headers = actual_vary_headers(response)
+      expect(actual_headers).to match_array(expected_vary_headers)
+    end
+
+    failure_message do |response|
+      actual_headers = actual_vary_headers(response)
+      "expected response to vary by headers #{expected_vary_headers.to_sentence}, but it varied by #{actual_headers.to_sentence}"
+    end
+
+    private
+
+    def actual_vary_headers(response)
+      response.headers['Vary'].split(/\s*,\s*/)
+    end
+  end
+
   shared_examples_for 'time field' do |reader:, header:|
     it "returns the value of the #{header} request header, parsed from epoch seconds to a Time object" do
       result = controller_eval(headers: { header => '1608714891' }, &reader)
@@ -1068,5 +1086,77 @@ describe Unpoly::Rails::Controller, type: :request do
 
   end
 
-end
+  describe 'tracking of header access for HTTP Vary' do
 
+    it "tracks the request headers accessed and echoes them in the Vary response header" do
+      controller_eval do
+        up.target
+      end
+
+      expect(response.headers['Vary']).to eq('X-Up-Target')
+    end
+
+    it 'does not track headers that are already tracked' do
+      controller_eval do
+        up.target
+        up.target
+      end
+
+      expect(response.headers['Vary']).to eq('X-Up-Target')
+    end
+
+    it "does not track a request header access within an `up.no_vary { }` block" do
+      controller_eval do
+        up.no_vary do
+          up.target
+        end
+
+        up.version
+      end
+
+      expect(response).to vary_exactly_by('X-Up-Version')
+    end
+
+    it "allows to disable tracking request header access up.vary = false" do
+      controller_eval do
+        up.target
+        up.vary = false
+        up.version
+      end
+
+      expect(response).to vary_exactly_by('X-Up-Target')
+    end
+
+    it 'tracks multiple request headers' do
+      controller_eval do
+        up.target
+        up.version
+      end
+
+      expect(response).to vary_exactly_by('X-Up-Target', 'X-Up-Version')
+    end
+
+    it 'merges an existing Vary header' do
+      controller_eval do
+        response.headers['Vary'] = 'Foo, Bar'
+        up.target
+      end
+
+      expect(response).to vary_exactly_by('Foo', 'Bar', 'X-Up-Target')
+    end
+
+    it 'does not preserve Vary headers over a a redirect' do
+      get '/binding_test/redirect1'
+
+      expect(response).to be_redirect
+      expect(response).to vary_exactly_by('X-Up-Mode')
+
+      follow_redirect!
+
+      # Response from action #redirect2
+      expect(response).to vary_exactly_by('X-Up-Fail-Mode', 'X-Up-Target')
+    end
+
+  end
+
+end

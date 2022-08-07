@@ -33,11 +33,13 @@ module Unpoly
       ##
       # TODO: Docs
       def redirect_to(target, *args)
-        if up?
-          target = url_for(target)
-          target = up.url_with_field_values(target)
+        up.no_vary do
+          if up?
+            target = url_for(target)
+            target = up.url_with_field_values(target)
+          end
+          super(target, *args)
         end
-        super(target, *args)
       end
 
       ::ActionController::Base.prepend(self)

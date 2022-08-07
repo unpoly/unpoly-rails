@@ -413,11 +413,49 @@ end
 ```
 
 
-### Preserving Unpoly-related request information through redirects
+### Unpoly headers are preserved through redirects
 
 `unpoly-rails` patches [`redirect_to`](https://api.rubyonrails.org/classes/ActionController/Redirecting.html#method-i-redirect_to)
-so Unpoly-related request information (like the CSS selector being targeted for a fragment
-update) will be preserved for the action you redirect to.
+so [Unpoly-related request and response headers](https://unpoly.com/up.protocol) are preserved for the action you redirect to.
+
+
+### Accessing Unpoly request headers automatically sets a `Vary` response header
+
+Accessing [Unpoly-related request headers](https://unpoly.com/up.protocol) through helper methods like `up.target` will automatically add a [`Vary`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Vary) response header. This is to indicate that the request header influenced the response and the response should be cached separately for each request header value.
+
+For example, a controller may access the request's `X-Up-Mode` through the `up.layer.mode` helper:
+
+```ruby
+def create
+  # ...
+
+  if up.layer.mode == 'modal' # Sets Vary header
+    up.layer.accept
+  else
+    redirect_to :show
+  end
+end
+```
+
+`unpoly-rails` will automatically add a `Vary` header to the response:
+
+```http
+Vary: X-Up-Mode
+```
+
+There are cases when reading an Unpoly request header does not necessarily influence the response, e.g. for logging. In that cases no `Vary` header should be set. To do so, call the helper method inside an `up.no_vary` block:
+
+```ruby
+up.no_vary do
+  Rails.logger.info("Unpoly mode is " + up.layer.mode.inspect) # No Vary header is set
+end
+````
+
+Note that accessing `response.headers[]` directly never sets a `Vary` header:
+
+```ruby
+Rails.logger.info("Unpoly mode is " + response.headers['X-Up-Mode']) # No Vary header is set
+```
 
 
 ### Automatic redirect detection
