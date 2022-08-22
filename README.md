@@ -21,9 +21,9 @@ Now run `bundle install` and restart your development server.
 Installing frontend assets
 --------------------------
 
-### With Webpacker
+### With esbuild or Webpacker
 
-If you're using [Webpacker](https://edgeguides.rubyonrails.org/webpacker.html), install the [`unpoly` npm package](https://unpoly.com/install/npm) to get Unpoly's frontend files.
+If you're using [esbuild](https://esbuild.github.io/) or [Webpacker](https://edgeguides.rubyonrails.org/webpacker.html), install the [`unpoly` npm package](https://unpoly.com/install/npm) to get Unpoly's frontend files.
 
 Now `import` Unpoly from your `application.js` pack:
 
