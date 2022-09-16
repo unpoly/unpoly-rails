@@ -31,7 +31,7 @@ class BindingTestController < ApplicationController
   def redirect1
     up.mode
     up.emit('event1')
-    up.cache.clear
+    up.cache.expire
     redirect_to action: :redirect2
   end
 

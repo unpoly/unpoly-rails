@@ -364,36 +364,30 @@ Returns whether the layer targeted for a failed response is an overlay.
 Returns the [context](https://unpoly.com/up.context) object of the layer targeted for a failed response.
 
 
-### Managing the client-side cache
+### Expiring the client-side cache
 
-The Unpoly frontend caches server responses for a few minutes, making requests to these URLs return instantly.
-Only `GET` requests are cached. The *entire* cache is cleared after every non-`GET` request (like `POST` or `PUT`).
+The Unpoly frontend [caches server responses](https://unpoly.com/caching) for a few minutes, making requests to these URLs return instantly.
+Only `GET` requests are cached. The entire cache is expired after every non-`GET` request (like `POST` or `PUT`).
 
-The server may override these defaults. For instance, the server can clear Unpoly's client-side response cache, even for `GET` requests:
-
-```ruby
-up.cache.clear
-```
-
-You may also clear a single page:
+The server may override these defaults. For instance, the server can expire Unpoly's client-side response cache, even for `GET` requests:
 
 ```ruby
-up.cache.clear('/notes/1034')
+up.cache.expire
 ```
 
-You may also clear all entries matching a URL pattern:
+You may also expire a single URL or [URL pattern](https://unpoly.com/url-patterns):
 
 ```ruby
-up.cache.clear('/notes/*')
+up.cache.expire('/notes/*')
 ```
 
-You may also prevent cache clearing for an unsafe request:
+You may also prevent cache expiration for an unsafe request:
 
 ```ruby
-up.cache.keep
+up.cache.expire(false)
 ```
 
-Here is an longer example where the server uses careful cache management to keep as much of the client-side cache as possible:
+Here is an longer example where the server uses careful cache management to avoid expiring too much of the client-side cache:
 
 ```ruby
 def NotesController < ApplicationController
@@ -401,15 +395,33 @@ def NotesController < ApplicationController
   def create
     @note = Note.create!(params[:note].permit(...))
     if @note.save
-      up.cache.clear('/notes/*') # Only clear affected entries
+      up.cache.expire('/notes/*') # Only expire affected entries
       redirect_to(@note)
     else
-      up.cache.keep # Keep the cache because we haven't saved
+      up.cache.expire(false) # Keep the cache fresh because we haven't saved
       render 'new'
     end
   end
   ...
 end
+```
+
+### Evicting pages from the client-side cache
+
+Instead of *expiring* pages from the cache you may also *evict*. The difference is that expired pages can still be rendered instantly and are then [revalidated](/caching#revalidation) with the server. Evicted pages are erased from the cache.
+
+You may also expire all entries matching an [URL pattern](https://unpoly.com/url-patterns):
+
+To evict the entire client-side cache:
+
+```ruby
+up.cache.evict
+```
+
+You may also evict a single URL or [URL pattern](https://unpoly.com/url-patterns):
+
+```ruby
+up.cache.evict('/notes/*')
 ```
 
 

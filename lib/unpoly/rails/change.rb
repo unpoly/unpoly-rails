@@ -24,7 +24,8 @@ module Unpoly
       field Field::Hash.new(:fail_context, default: -> { {} }), method: :input_fail_context
       field Field::Hash.new(:context_changes, default: -> { {} }), response_header_name: 'X-Up-Context'
       field Field::Array.new(:events, default: -> { [] })
-      field Field::String.new(:clear_cache)
+      field Field::String.new(:expire_cache)
+      field Field::String.new(:evict_cache)
       field Field::Time.new(:reload_from_time)
 
       ##
@@ -246,7 +247,8 @@ module Unpoly
         no_vary do
           write_events_to_response_headers
 
-          write_clear_cache_to_response_headers
+          write_expire_cache_to_response_headers
+          write_evict_cache_to_response_headers
 
           if context_changes.present?
             write_context_changes_to_response_headers
@@ -297,18 +299,32 @@ module Unpoly
         Cache.new(self)
       end
 
-      def clear_cache
+      def expire_cache
         # Cache commands are outgoing only. They wouldn't be passed as a request header.
         # We might however pass them as params so they can survive a redirect.
-        if @clear_cache.nil?
-          clear_cache_from_params
+        if @expire_cache.nil?
+          expire_cache_from_params
         else
-          @clear_cache
+          @expire_cache
         end
       end
 
-      def clear_cache=(value)
-        @clear_cache = value
+      def expire_cache=(value)
+        @expire_cache = value
+      end
+
+      def evict_cache
+        # Cache commands are outgoing only. They wouldn't be passed as a request header.
+        # We might however pass them as params so they can survive a redirect.
+        if @evict_cache.nil?
+          evict_cache_from_params
+        else
+          @evict_cache
+        end
+      end
+
+      def evict_cache=(value)
+        @evict_cache = value
       end
 
       def reload_from_time(deprecation: true)
@@ -384,7 +400,8 @@ module Unpoly
         params[input_fail_context_param_name] = serialized_input_fail_context
         params[context_changes_param_name]    = serialized_context_changes
         params[events_param_name]             = serialized_events
-        params[clear_cache_param_name]        = serialized_clear_cache
+        params[expire_cache_param_name]       = serialized_expire_cache
+        params[evict_cache_param_name]        = serialized_evict_cache
 
         # Don't send empty response headers.
         params = params.select { |_key, value| value.present? }

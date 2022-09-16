@@ -626,32 +626,68 @@ describe Unpoly::Rails::Controller, type: :request do
 
   describe 'up.cache.clear' do
 
-    it 'sets an `X-Up-Clear-Cache: *` header' do
+    it 'sets an `X-Up-Expire-Cache: *` header' do
       controller_eval do
-        up.cache.clear
+        ActiveSupport::Deprecation.silence do
+          up.cache.clear
+        end
       end
 
-      expect(response.headers['X-Up-Clear-Cache']).to eq('*')
+      expect(response.headers['X-Up-Expire-Cache']).to eq('*')
     end
 
-    it 'sets an X-Up-Clear-Cache header with the given URL pattern' do
+  end
+
+  describe 'up.cache.expire' do
+
+    it 'sets an `X-Up-Expire-Cache: *` header' do
       controller_eval do
-        up.cache.clear('/foo/*')
+        up.cache.expire
       end
 
-      expect(response.headers['X-Up-Clear-Cache']).to eq('/foo/*')
+      expect(response.headers['X-Up-Expire-Cache']).to eq('*')
+    end
+
+    it 'sets an X-Up-Expire-Cache header with the given URL pattern' do
+      controller_eval do
+        up.cache.expire('/foo/*')
+      end
+
+      expect(response.headers['X-Up-Expire-Cache']).to eq('/foo/*')
    end
 
   end
 
   describe 'up.cache.keep' do
 
-    it 'sets an `X-Up-Clear-Cache: false` header' do
+    it 'sets an `X-Up-Expire-Cache: false` header' do
       controller_eval do
-        up.cache.keep
+        ActiveSupport::Deprecation.silence do
+          up.cache.keep
+        end
       end
 
-      expect(response.headers['X-Up-Clear-Cache']).to eq('false')
+      expect(response.headers['X-Up-Expire-Cache']).to eq('false')
+    end
+
+  end
+
+  describe 'up.cache.evict' do
+
+    it 'sets an `X-Up-Evict-Cache: *` header' do
+      controller_eval do
+        up.cache.evict
+      end
+
+      expect(response.headers['X-Up-Evict-Cache']).to eq('*')
+    end
+
+    it 'sets an X-Up-Evict-Cache header with the given URL pattern' do
+      controller_eval do
+        up.cache.evict('/foo/*')
+      end
+
+      expect(response.headers['X-Up-Evict-Cache']).to eq('/foo/*')
     end
 
   end
@@ -976,7 +1012,7 @@ describe Unpoly::Rails::Controller, type: :request do
       expect(response.headers['X-Up-Events']).to match_json([
         { type: 'event1' }
       ])
-      expect(response.headers['X-Up-Clear-Cache']).to eq('*')
+      expect(response.headers['X-Up-Expire-Cache']).to eq('*')
     end
 
     it 'preserves Unpoly-releated headers over multiple redirects' do
