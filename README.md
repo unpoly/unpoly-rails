@@ -5,6 +5,8 @@ unpoly-rails: Ruby on Rails bindings for Unpoly
 
 The `unpoly-rails` gem helps integrating Unpoly with [Ruby on Rails](https://rubyonrails.org/) applications.
 
+This branch tracks the next major version, Unpoly 3.x. If you're using Unpoly 2.x, use the [`2.x-stable`](https://github.com/unpoly/unpoly-rails/tree/2.x-stable) branch.
+
 
 Installing the gem
 ------------------
