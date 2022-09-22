@@ -16,7 +16,7 @@ require_relative 'dummy/application'
 $: << File.join(File.dirname(__FILE__), "/../lib" )
 require 'unpoly-rails'
 require 'rspec/rails'
-Dir['spec/support/**/*.rb'].each { |f| require f }
+Dir[Rails.root.join('spec', 'support', '**', '*.rb')].sort.each { |f| require f }
 
 RSpec.configure do |config|
   config.infer_spec_type_from_file_location!

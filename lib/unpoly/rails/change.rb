@@ -66,7 +66,10 @@ module Unpoly
       end
 
       def target_changed?
-        target != target_from_request
+        # The target has changed if either:
+        # (1) The #target= setter was called, setting @server_target
+        # (2) An up[target] param was set to preserve a previously changed target through a redirect.
+        (@server_target && @server_target != target_from_request_headers) || target_from_params
       end
 
       ##
@@ -390,18 +393,25 @@ module Unpoly
 
       def fields_as_params
         params = {}
-        params[version_param_name]            = serialized_version
-        params[target_param_name]             = serialized_target
-        params[fail_target_param_name]        = serialized_fail_target
-        params[validate_names_param_name]     = serialized_validate_names
-        params[mode_param_name]               = serialized_mode
-        params[fail_mode_param_name]          = serialized_fail_mode
-        params[input_context_param_name]      = serialized_input_context
-        params[input_fail_context_param_name] = serialized_input_fail_context
-        params[context_changes_param_name]    = serialized_context_changes
-        params[events_param_name]             = serialized_events
-        params[expire_cache_param_name]       = serialized_expire_cache
-        params[evict_cache_param_name]        = serialized_evict_cache
+
+        # When the browser sees a redirect it will automatically resend the request headers
+        # from the original request. This means that headers we set on the client (X-Up-Target, X-Up-Mode, etc.)
+        # are automatically preserved through redirects.
+        #
+        # We still need to handle all the response headers that we set on the server.
+        # There are encoded as params.
+        params[context_changes_param_name] = serialized_context_changes      # server-set header must be sent if present
+        params[events_param_name]          = serialized_events               # server-set header must be sent if present
+        params[expire_cache_param_name]    = serialized_expire_cache         # server-set header must be sent if present
+        params[evict_cache_param_name]     = serialized_evict_cache          # server-set header must be sent if present
+
+        if target_changed?
+          # Only write the target to the response if it has changed.
+          # The client might have a more abstract target like :main
+          # that we don't want to override with an echo of the first match.
+          params[target_param_name] = serialized_target
+        end
+
 
         # Don't send empty response headers.
         params = params.select { |_key, value| value.present? }
