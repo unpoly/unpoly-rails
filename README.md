@@ -7,7 +7,7 @@ The `unpoly-rails` gem helps integrating Unpoly with [Ruby on Rails](https://rub
 
 This branch tracks the next major version, Unpoly **3.x**.\
 If you're using Unpoly **2.x**, use the [`2.x-stable`](https://github.com/unpoly/unpoly-rails/tree/2.x-stable) branch.\
-If you're using Unpoly **1.x** or **0.x**, use the [`1.x-stable`](https://github.com/unpoly/unpoly/tree/1.x-stable) branch in the [`unpoly`](https://github.com/unpoly/unpoly-rails/tree/2.x-stable) repository.
+If you're using Unpoly **1.x** or **0.x**, use the [`1.x-stable`](https://github.com/unpoly/unpoly/tree/1.x-stable/lib/unpoly/rails) branch in the [`unpoly`](https://github.com/unpoly/unpoly-rails/tree/2.x-stable) repository.
 
 
 Installing the gem
