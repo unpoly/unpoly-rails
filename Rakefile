@@ -5,21 +5,37 @@ module Unpoly
   module Rails
     class Release
       class << self
-        def npm_version
+        def npm_version(extension: true)
           package_json_path = 'assets/unpoly-dev/package.json'
           package_json_content = File.read(package_json_path)
           package_info = JSON.parse(package_json_content)
-          package_info['version'].presence or raise Error, "Cannot parse { version } from #{package_json_path}"
+          version = package_info['version'].presence
+          version or raise Error, "Cannot parse { version } from #{package_json_path}"
+          process_extension(version, extension)
         end
 
-        def gem_version
+        def gem_version(extension: true)
           require_relative 'lib/unpoly/rails/version'
-          Unpoly::Rails::VERSION
+          version = Unpoly::Rails::VERSION
+          process_extension(version, extension)
         end
 
         def pre_release?
           version =~ /rc|beta|pre|alpha/
         end
+
+        def process_extension(version, extension)
+          if version
+            if extension
+              version
+            elsif version =~ /^\d+\.\d+\.\d+/
+              Regexp.last_match(0)
+            else
+              raise "Cannot parse Semver version: #{version.inspect}"
+            end
+          end
+        end
+
       end
     end
   end
@@ -35,7 +51,7 @@ namespace :gem do
     puts
     puts "Before continuing, make sure the following tasks are done:"
     puts
-    puts "- The files in ../unpoly/dist are the latest build"
+    puts "- The files in ../unpoly/dist are the latest build for version #{Unpoly::Rails::Release.gem_version(extension: false)}"
     puts "- You have released a new version of the unpoly npm package"
     puts "- You have bumped the version in lib/unpoly/rails/version.rb to match that of Unpoly's package.json"
     puts "- You have committed and pushed the changes"
@@ -53,11 +69,11 @@ namespace :gem do
 
   desc 'Ensure that package.js and version.rb have the same version'
   task :ensure_synced_versions do
-    gem_version = Unpoly::Rails::Release.gem_version
-    npm_version = Unpoly::Rails::Release.npm_version
+    unextended_gem_version = Unpoly::Rails::Release.gem_version(extension: false)
+    unextended_npm_version = Unpoly::Rails::Release.npm_version(extension: false)
 
-    unless gem_version == npm_version
-      raise "Gem version (#{gem_version}) does not match npm version (#{npm_version})"
+    unless unextended_gem_version == unextended_npm_version
+      raise "Gem version (#{unextended_gem_version}) does not match npm version (#{unextended_npm_version})"
     end
   end
   Rake::Task['gem:build'].enhance ['gem:ensure_synced_versions']
