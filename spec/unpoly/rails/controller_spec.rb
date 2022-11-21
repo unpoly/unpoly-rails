@@ -1056,6 +1056,16 @@ describe Unpoly::Rails::Controller, type: :request do
       expect(response.headers['X-Up-Location']).to end_with('/binding_test/text?foo=bar')
     end
 
+    it 'removes _up-* params' do
+      get '/binding_test/text?_up_1=x&foo=bar&_up_2=y'
+      expect(response.headers['X-Up-Location']).to end_with('/binding_test/text?foo=bar')
+    end
+
+    it 'does not mangle array params (BUGFIX)' do
+      get '/binding_test/text?foo%5B%5D=bar&foo%5B%5D=qux&_up_location=up_location'
+      expect(response.headers['X-Up-Location']).to end_with('/binding_test/text?foo%5B%5D=bar&foo%5B%5D=qux')
+    end
+
   end
 
   describe 'echoing of the request method' do
