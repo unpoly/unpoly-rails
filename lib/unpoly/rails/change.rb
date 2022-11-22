@@ -280,14 +280,18 @@ module Unpoly
         # Parse the URL to extract the ?query part below.
         uri = URI.parse(original_url)
 
-        # This parses the query as a flat list of key/value pairs.
-        params = Rack::Utils.parse_query(uri.query)
+        # Split at &
+        query_parts = uri.query.split('&')
 
         # We only used the up[...] params to transport headers, but we don't
         # want them to appear in a history URL.
-        non_up_params = params.reject { |key, _value| key.starts_with?(Field::PARAM_PREFIX) }
+        non_up_query_parts = query_parts.reject { |query_part| query_part.start_with?(Field::PARAM_PREFIX) }
 
-        append_params_to_url(uri.path, non_up_params)
+        if non_up_query_parts.empty?
+          uri.path
+        else
+          "#{uri.path}?#{non_up_query_parts.join('&')}"
+        end
       end
 
       memoize def layer
