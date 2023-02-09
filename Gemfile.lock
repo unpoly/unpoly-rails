@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    unpoly-rails (2.4.1)
+    unpoly-rails (3.0.0.rc1)
       actionpack (>= 3.2)
       activesupport (>= 3.2)
       memoized
