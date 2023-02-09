@@ -12,7 +12,7 @@ module Unpoly
           spec_folder = root.join('spec')
 
           # If a local application has referenced the local gem sources
-          # (e.g. `gem 'unpoly', path: '../unpoly'`) we use the local build.
+          # (e.g. `gem 'unpoly-rails', path: '../unpoly-rails'`) we use the local build.
           # This way changes from the Webpack watcher are immediately picked
           # up by the application.
           is_local_gem = spec_folder.directory?
