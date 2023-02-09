@@ -52,6 +52,7 @@ namespace :gem do
     puts "Before continuing, make sure the following tasks are done:"
     puts
     puts "- The files in ../unpoly/dist are the latest build for version #{Unpoly::Rails::Release.gem_version(extension: false)}"
+    puts "- The files in ../unpoly/dist don't have files left over from another version (clean with `rake release:clean`)"
     puts "- You have released a new version of the unpoly npm package"
     puts "- You have bumped the version in lib/unpoly/rails/version.rb to match that of Unpoly's package.json"
     puts "- You have committed and pushed the changes"
