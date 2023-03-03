@@ -491,6 +491,14 @@ describe Unpoly::Rails::Controller, type: :request do
       expect(response.headers['X-Up-Context']).to match_json(bar: 'barValue')
     end
 
+    it 'escapes high-ASCII characters in the header value, so we can transport it over HTTP' do
+      controller_eval(headers: { 'X-Up-Context': { 'foo': 'fooValue' }.to_json }) do
+        up.context[:bar] = 'xäy'
+      end
+
+      expect(response.headers['X-Up-Context']).to match_json('{"bar": "x\\u00e4y"}')
+    end
+
     it 'changes the value for subsequent calls of up.context[]' do
       value = controller_eval do
         up.context[:bar] = 'barValue'
@@ -716,6 +724,18 @@ describe Unpoly::Rails::Controller, type: :request do
       ])
     end
 
+    it 'escapes high-ASCII characters in the header value, so we can transport it over HTTP' do
+      controller_eval(headers: { 'X-Up-Mode': 'modal' }) do
+        up.layer.accept('xäy')
+      end
+
+      controller_eval do
+        up.emit('my:event', { 'foo' => 'xäy' })
+      end
+
+      expect(response.headers['X-Up-Events']).to eq('[{"foo":"x\\u00e4y","type":"my:event"}]')
+    end
+
   end
 
   describe 'up.layer.emit' do
@@ -839,6 +859,14 @@ describe Unpoly::Rails::Controller, type: :request do
       expect(accept_root).to raise_error(/cannot accept/i)
     end
 
+    it 'escapes high-ASCII characters in the header value, so we can transport it over HTTP' do
+      controller_eval(headers: { 'X-Up-Mode': 'modal' }) do
+        up.layer.accept('xäy')
+      end
+
+      expect(response.headers['X-Up-Accept-Layer']).to eq('"x\\u00e4y"')
+    end
+
   end
 
   describe 'up.layer.dismiss' do
@@ -867,6 +895,14 @@ describe Unpoly::Rails::Controller, type: :request do
       end
 
       expect(dismiss_root).to raise_error(/cannot dismiss/i)
+    end
+
+    it 'escapes high-ASCII characters in the header value, so we can transport it over HTTP' do
+      controller_eval(headers: { 'X-Up-Mode': 'modal' }) do
+        up.layer.dismiss('xäy')
+      end
+
+      expect(response.headers['X-Up-Dismiss-Layer']).to eq('"x\\u00e4y"')
     end
 
   end

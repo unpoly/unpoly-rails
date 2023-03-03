@@ -40,14 +40,14 @@ module Unpoly
         # TODO: Docs
         def accept(value = nil)
           overlay? or raise CannotClose, 'Cannot accept the root layer'
-          change.response.headers['X-Up-Accept-Layer'] = value.to_json
+          change.response.headers['X-Up-Accept-Layer'] = Util.safe_json_encode(value)
         end
 
         ##
         # TODO: Docs
         def dismiss(value = nil)
           overlay? or raise CannotClose, 'Cannot dismiss the root layer'
-          change.response.headers['X-Up-Dismiss-Layer'] = value.to_json
+          change.response.headers['X-Up-Dismiss-Layer'] = Util.safe_json_encode(value)
         end
 
         private

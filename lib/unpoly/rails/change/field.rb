@@ -102,7 +102,7 @@ module Unpoly
 
           def parse(raw)
             if raw.present?
-              result = ActiveSupport::JSON.decode(raw)
+              result = Util.json_decode(raw)
             elsif @default
               result = instance_exec(&@default)
             end
@@ -116,7 +116,7 @@ module Unpoly
 
           def stringify(value)
             unless value.nil?
-              ActiveSupport::JSON.encode(value)
+              Util.safe_json_encode(value)
             end
           end
 
@@ -133,7 +133,7 @@ module Unpoly
 
           def parse(raw)
             if raw.present?
-              result = ActiveSupport::JSON.decode(raw)
+              result = Util.json_decode(raw)
             elsif @default
               result = instance_exec(&@default)
             end
@@ -143,7 +143,7 @@ module Unpoly
 
           def stringify(value)
             unless value.nil?
-              ActiveSupport::JSON.encode(value)
+              Util.safe_json_encode(value)
             end
           end
 
