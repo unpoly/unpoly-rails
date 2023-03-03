@@ -50,7 +50,7 @@ module Unpoly
           end
 
           def stringify(value)
-            value.to_json
+            Util.safe_json_encode(value)
           end
 
         end
@@ -75,7 +75,7 @@ module Unpoly
 
           def parse(raw)
             if raw.present?
-              result = ActiveSupport::JSON.decode(raw)
+              result = Util.json_decode(raw)
             else
               result = {}
             end
@@ -88,7 +88,7 @@ module Unpoly
           end
 
           def stringify(value)
-            ActiveSupport::JSON.encode(value)
+            Util.safe_json_encode(value)
           end
 
         end
@@ -97,7 +97,7 @@ module Unpoly
 
           def parse(raw)
             if raw.present?
-              result = ActiveSupport::JSON.decode(raw)
+              result = Util.json_decode(raw)
             else
               result = []
             end
@@ -106,7 +106,7 @@ module Unpoly
           end
 
           def stringify(value)
-            ActiveSupport::JSON.encode(value)
+            Util.safe_json_encode(value)
           end
 
         end

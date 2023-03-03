@@ -1,6 +1,7 @@
 require 'memoized'
 require_relative 'unpoly/rails/version'
 require_relative 'unpoly/rails/error'
+require_relative 'unpoly/rails/util'
 require_relative 'unpoly/rails/engine'
 require_relative 'unpoly/rails/request_echo_headers'
 require_relative 'unpoly/rails/request_method_cookie'
