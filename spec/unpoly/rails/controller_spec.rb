@@ -985,7 +985,14 @@ describe Unpoly::Rails::Controller, type: :request do
       controller_eval do
         up.title = 'Title from controller'
       end
-      expect(response.headers['X-Up-Title']).to eq('Title from controller')
+      expect(response.headers['X-Up-Title']).to eq('"Title from controller"')
+    end
+
+    it 'escapes high-ASCII characters in the header value, so we can transport it over HTTP' do
+      controller_eval do
+        up.title = 'xäy'
+      end
+      expect(response.headers['X-Up-Title']).to eq('"x\\u00e4y"')
     end
 
   end

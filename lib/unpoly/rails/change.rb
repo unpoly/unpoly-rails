@@ -243,7 +243,7 @@ module Unpoly
       def title=(new_title)
         # We don't make this a field since it belongs to *this* response
         # and should not survive a redirect.
-        response.headers['X-Up-Title'] = new_title
+        response.headers['X-Up-Title'] = Util.safe_json_encode(new_title)
       end
 
       def after_action
