@@ -18,9 +18,13 @@ module Unpoly
       end
 
       private
-      
+
       def set_up_request_echo_headers
-        response.headers['X-Up-Location'] = up.request_url_without_up_params
+        request_url_without_up_params = up.request_url_without_up_params
+        unless request_url_without_up_params == request.original_url
+          response.headers['X-Up-Location'] = up.request_url_without_up_params
+        end
+
         response.headers['X-Up-Method'] = request.method
       end
 
