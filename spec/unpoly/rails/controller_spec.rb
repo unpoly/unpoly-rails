@@ -995,31 +995,28 @@ describe Unpoly::Rails::Controller, type: :request do
 
   describe 'echoing of the request location' do
 
-    it 'echoes the current path in an X-Up-Location response header' do
+    it 'does not echo the current path in an X-Up-Location response header to prevent the user-controlled request URL from exceeding the maximum response header size' do
       get '/binding_test/text'
-      expect(response.headers['X-Up-Location']).to end_with('/binding_test/text')
+      expect(response.headers['X-Up-Location']).to be_nil
     end
 
-    it 'echoes the current path after a redirect' do
-      get '/binding_test/redirect1'
-      expect(response).to be_redirect
-      follow_redirect!
-      expect(response.headers['X-Up-Location']).to end_with('/binding_test/redirect2')
-    end
+    describe 'when the request URL contains query params prefixed with "_up-"' do
 
-    it 'echoes the current path with query params' do
-      get '/binding_test/text?foo=bar'
-      expect(response.headers['X-Up-Location']).to end_with('/binding_test/text?foo=bar')
-    end
+      it 'removes params prefixed with "_up-"' do
+        get '/binding_test/text?_up_1&_up_2=y'
+        expect(response.headers['X-Up-Location']).to end_with('/binding_test/text')
+      end
 
-    it 'removes _up-* params' do
-      get '/binding_test/text?_up_1=x&foo=bar&_up_2=y'
-      expect(response.headers['X-Up-Location']).to end_with('/binding_test/text?foo=bar')
-    end
+      it 'keeps params not prefixed with "_up-"' do
+        get '/binding_test/text?_up_1=x&foo=bar&_up_2=y'
+        expect(response.headers['X-Up-Location']).to end_with('/binding_test/text?foo=bar')
+      end
 
-    it 'does not mangle array params (BUGFIX)' do
-      get '/binding_test/text?foo%5B%5D=bar&foo%5B%5D=qux&_up_location=up_location'
-      expect(response.headers['X-Up-Location']).to end_with('/binding_test/text?foo%5B%5D=bar&foo%5B%5D=qux')
+      it 'does not mangle array params (BUGFIX)' do
+        get '/binding_test/text?_up_1=x&foo%5B%5D=bar&foo%5B%5D=qux&_up_location=up_location'
+        expect(response.headers['X-Up-Location']).to end_with('/binding_test/text?foo%5B%5D=bar&foo%5B%5D=qux')
+      end
+
     end
 
   end
