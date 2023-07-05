@@ -457,6 +457,26 @@ describe Unpoly::Rails::Controller, type: :request do
 
   end
 
+  describe 'up.validate_name' do
+
+    it 'returns the first first validate name' do
+      value = controller_eval(headers: { 'X-Up-Validate': 'foo bar' }) do
+        up.validate_name
+      end
+
+      expect(value).to eq('foo')
+    end
+
+    it "returns nil when we're not validating" do
+      value = controller_eval do
+        up.validate_name
+      end
+
+      expect(value).to be_nil
+    end
+
+  end
+
   describe 'up.mode' do
 
     it_behaves_like 'string field',

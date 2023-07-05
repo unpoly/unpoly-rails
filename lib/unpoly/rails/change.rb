@@ -149,7 +149,7 @@ module Unpoly
 
       memoize def validate_name
         if validating?
-          validates_names.first
+          validate_names.first
         end
       end
 
