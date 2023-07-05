@@ -459,7 +459,7 @@ describe Unpoly::Rails::Controller, type: :request do
 
   describe 'up.validate_name' do
 
-    it 'returns the first first validate name' do
+    it 'returns the first validate name' do
       value = controller_eval(headers: { 'X-Up-Validate': 'foo bar' }) do
         up.validate_name
       end
@@ -467,12 +467,48 @@ describe Unpoly::Rails::Controller, type: :request do
       expect(value).to eq('foo')
     end
 
-    it "returns nil when we're not validating" do
+    it "returns nil if we're not validating" do
       value = controller_eval do
         up.validate_name
       end
 
       expect(value).to be_nil
+    end
+
+  end
+
+  describe 'up.validate_name?' do
+
+    it 'returns true if the given field name is being validated' do
+      value = controller_eval(headers: { 'X-Up-Validate': 'foo bar baz' }) do
+        up.validate_name?('bar')
+      end
+
+      expect(value).to eq(true)
+    end
+
+    it 'returns false if only other field names are being validated' do
+      value = controller_eval(headers: { 'X-Up-Validate': 'foo bar baz' }) do
+        up.validate_name?('qux')
+      end
+
+      expect(value).to eq(false)
+    end
+
+    it 'accepts a symbol for the field name' do
+      value = controller_eval(headers: { 'X-Up-Validate': 'foo bar baz' }) do
+        up.validate_name?(:bar)
+      end
+
+      expect(value).to eq(true)
+    end
+
+    it "returns false if we're not validating" do
+      value = controller_eval do
+        up.validate_name?('foo')
+      end
+
+      expect(value).to eq(false)
     end
 
   end

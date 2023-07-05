@@ -143,14 +143,18 @@ module Unpoly
       # the validation.
       #
       # Note that multiple validating form fields may be batched into a single request.
-      def validate_names
+      memoize def validate_names
         validate_names_from_request
       end
 
-      memoize def validate_name
+      def validate_name
         if validating?
           validate_names.first
         end
+      end
+
+      def validate_name?(name)
+        !!validate_names&.include?(name.to_s)
       end
 
       ##

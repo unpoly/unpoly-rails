@@ -207,6 +207,12 @@ You may also access the [names of the fields that triggered the validation reque
 up.validate_names # => ['email', 'password']
 ```
 
+You may also test if a given field name is being validated:
+
+```ruby
+up.validate_name?('email') # => true
+```
+
 
 ### Detecting a fragment reload
 
