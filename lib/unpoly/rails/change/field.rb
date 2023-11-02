@@ -48,7 +48,7 @@ module Unpoly
         end
 
         ##
-        # An array of strings, serialized as JSON.
+        # An array of strings, separated by a space character.
         class SeparatedValues < Field
 
           def initialize(name, separator: ' ', default: nil)
