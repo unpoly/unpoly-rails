@@ -2,8 +2,7 @@ module Unpoly
   module Rails
     ##
     # The current version of the unpoly-rails gem.
-    # This version number is also used for releases of the Unpoly
-    # frontend code.
+    # The first 3 digits should match the version of the Unpoly frontend code.
     VERSION = '3.3.0'
   end
 end
