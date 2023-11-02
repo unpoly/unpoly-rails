@@ -103,6 +103,11 @@ describe Unpoly::Rails::Controller, type: :request do
       result = controller_eval(&reader)
       expect(result.to_h).to eq({})
     end
+
+    it "returns an empty hash if the #{header} request header is invalid JSON" do
+      result = controller_eval(headers: { header => 'invalid-json'}, &reader)
+      expect(result.to_h).to eq({})
+    end
   end
 
   describe 'up?' do

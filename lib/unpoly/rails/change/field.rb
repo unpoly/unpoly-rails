@@ -60,8 +60,8 @@ module Unpoly
           def parse(raw)
             if raw
               raw.split(@separator)
-            elsif @default
-              instance_exec(&@default)
+            else
+              @default&.call
             end
           end
 
@@ -101,11 +101,7 @@ module Unpoly
           end
 
           def parse(raw)
-            if raw.present?
-              result = Util.json_decode(raw)
-            elsif @default
-              result = instance_exec(&@default)
-            end
+            result = Util.guard_json_decode(raw, &@default)
 
             if result.is_a?(::Hash)
               result = ActiveSupport::HashWithIndifferentAccess.new(result)
@@ -132,13 +128,7 @@ module Unpoly
           end
 
           def parse(raw)
-            if raw.present?
-              result = Util.json_decode(raw)
-            elsif @default
-              result = instance_exec(&@default)
-            end
-
-            result
+            Util.guard_json_decode(raw, &@default)
           end
 
           def stringify(value)

@@ -3,8 +3,20 @@ module Unpoly
     class Util
       class << self
 
-        def json_decode(string)
-          ActiveSupport::JSON.decode(string)
+        def guard_json_decode(raw, &default)
+          if raw.present?
+            begin
+              ActiveSupport::JSON.decode(raw)
+            rescue ActiveSupport::JSON.parse_error
+              # We would love to crash here, as it might indicate a bug in the frontend code.
+              # Unfortunately security scanners may be spamming malformed JSON in X-Up headers,
+              # DOSing us with error notifications.
+              ::Rails.logger.error('unpoly-rails: Ignoring malformed JSON in X-Up header')
+              default&.call
+            end
+          else
+            default&.call
+          end
         end
 
         # We build a lot of JSON that goes into HTTP header.
