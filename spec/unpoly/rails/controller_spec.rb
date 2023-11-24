@@ -917,7 +917,7 @@ describe Unpoly::Rails::Controller, type: :request do
         end
       end
 
-      expect(accept_root).to raise_error(/cannot accept/i)
+      expect(&accept_root).to raise_error(/cannot accept/i)
     end
 
     it 'escapes high-ASCII characters in the header value, so we can transport it over HTTP' do
@@ -955,7 +955,7 @@ describe Unpoly::Rails::Controller, type: :request do
         end
       end
 
-      expect(dismiss_root).to raise_error(/cannot dismiss/i)
+      expect(&dismiss_root).to raise_error(/cannot dismiss/i)
     end
 
     it 'escapes high-ASCII characters in the header value, so we can transport it over HTTP' do

@@ -5,8 +5,8 @@ default: &default
 
 development:
   <<: *default
-  database: spec/dummy/db/development.sqlite3
+  database: db/development.sqlite3
 
 test:
   <<: *default
-  database: spec/dummy/db/test.sqlite3
+  database: db/test.sqlite3
