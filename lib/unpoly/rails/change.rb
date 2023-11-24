@@ -279,7 +279,9 @@ module Unpoly
       def request_url_without_up_params
         original_url = request.original_url
 
-        original_url.include?(Field::PARAM_PREFIX) or return original_url
+        query_presence_index = original_url.index("?")
+        return original_url if query_presence_index.nil?
+        return original_url if original_url.index(Field::PARAM_PREFIX, query_presence_index).nil?
 
         # Parse the URL to extract the ?query part below.
         uri = URI.parse(original_url)
