@@ -266,6 +266,9 @@ link_to 'Click me', '/path, 'up-follow': true, 'up-on-loaded': up.safe_callback(
 
 For this to work you must also include the `<meta name="csp-nonce">` tag in the `<head>` of your initial page. Rails has a [`csp_meta_tag`](https://api.rubyonrails.org/classes/ActionView/Helpers/CspHelper.html#method-i-csp_meta_tag) helper for that purpose.
 
+> [!NOTE]
+> Prefixing nonces only works for `[up-on...]` attributes. You cannot use it for native HTML attributes like `[onclick]`.
+
 
 ### Working with context
 
