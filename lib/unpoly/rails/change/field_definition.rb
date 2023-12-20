@@ -52,7 +52,7 @@ module Unpoly
             define_method "#{method}_request_header_accessed!" do
               return unless vary?
               header_name = send("#{method}_request_header_name")
-              earlier_varies = response.headers['Vary']&.split(/\s*,\s*/) || []
+              earlier_varies = response.headers['Vary']&.split(',')&.map(&:strip) || []
               response.headers['Vary'] = (earlier_varies | [header_name]).join(', ')
             end
 
