@@ -384,7 +384,7 @@ module Unpoly
         # The user may have chosen to not reveal their target for better
         # cacheability (see up.network.config#requestMetaKeys).
         if up? && frontend_target.present?
-          parts = frontend_target.split(/\s*,\s*/)
+          parts = frontend_target.split(',')&.map(&:strip)
           parts.any? do |part|
             if part == tested_target
               true
