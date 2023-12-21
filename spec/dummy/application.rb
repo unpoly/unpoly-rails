@@ -6,6 +6,7 @@ module Dummy
 
   class Application < Rails::Application
 
+    config.root = APP_ROOT
     config.secret_key_base = "SECRET_KEY_BASE"
     config.eager_load = false
 
@@ -15,6 +16,7 @@ module Dummy
     # https://github.com/rails/rails/issues/29712
     config.action_dispatch.show_exceptions = false
 
+    config.paths["app/assets"] << "#{APP_ROOT}/app/assets"
     config.paths["app/controllers"] << "#{APP_ROOT}/app/controllers"
     config.paths["app/models"] << "#{APP_ROOT}/app/models"
     config.paths["app/views"] << "#{APP_ROOT}/app/views"
