@@ -47,4 +47,14 @@ describe Unpoly::Rails::Change do
       expect(subject.request_url_without_up_params).to eq("/some_sign_up_path?param1=1&param2=2")
     end
   end
+
+  describe '#test_target' do
+
+    it 'is fast' do
+      allow(subject).to receive(:up?).and_return(true)
+      expect { subject.send(:test_target, " " * 32_000 + "a,", "bar") }.to perform_under(1).ms
+    end
+
+  end
+
 end

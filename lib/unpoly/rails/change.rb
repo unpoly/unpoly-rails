@@ -385,6 +385,7 @@ module Unpoly
         # cacheability (see up.network.config#requestMetaKeys).
         if up? && frontend_target.present?
           parts = frontend_target.split(',')&.map(&:strip)
+
           parts.any? do |part|
             if part == tested_target
               true

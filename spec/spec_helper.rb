@@ -14,6 +14,7 @@ require_relative 'dummy/application'
 # end
 
 $: << File.join(File.dirname(__FILE__), "/../lib" )
+require 'rspec-benchmark'
 require 'unpoly-rails'
 require 'rspec/rails'
 Dir[File.join(__dir__,'support', '**', '*.rb')].sort.each { |f| require f }
@@ -30,4 +31,5 @@ RSpec.configure do |config|
     c.syntax = [:expect]
   end
 
+  config.include RSpec::Benchmark::Matchers
 end

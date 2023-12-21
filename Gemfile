@@ -25,3 +25,5 @@ gem 'byebug'
 
 gem 'rspec'
 gem 'rspec-rails'
+gem 'rspec-benchmark'
+
