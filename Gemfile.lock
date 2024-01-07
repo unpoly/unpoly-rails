@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    unpoly-rails (3.7.0)
+    unpoly-rails (3.7.0.1)
       actionpack (>= 3.2)
       activesupport (>= 3.2)
       memoized
@@ -181,4 +181,4 @@ DEPENDENCIES
   unpoly-rails!
 
 BUNDLED WITH
-   2.4.10
+   2.4.22
