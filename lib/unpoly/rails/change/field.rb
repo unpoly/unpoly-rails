@@ -103,11 +103,17 @@ module Unpoly
           def parse(raw)
             result = Util.guard_json_decode(raw, &@default)
 
-            if result.is_a?(::Hash)
-              result = ActiveSupport::HashWithIndifferentAccess.new(result)
+            # A client might have sent valid JSON but not a JSON object.
+            # E.g. an array, number or string.
+            unless result.is_a?(::Hash)
+              if raw.present?
+                ::Rails.logger.error('unpoly-rails: Unexpected JSON value in X-Up header')
+              end
+
+              result = {}
             end
 
-            result
+            ActiveSupport::HashWithIndifferentAccess.new(result)
           end
 
           def stringify(value)
