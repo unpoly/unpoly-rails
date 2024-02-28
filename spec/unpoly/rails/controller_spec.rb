@@ -363,6 +363,12 @@ describe Unpoly::Rails::Controller, type: :request do
       expect(result).to eq(true)
     end
 
+    it 'returns true if the tested CSS selector is optionally requested (:maybe suffix)' do
+      result = controller_eval(headers: { 'X-Up-Target': '.foo, .bar:maybe, .baz' }) do
+        up.target?('.bar')
+      end
+      expect(result).to eq(true)
+    end
 
   end
 
