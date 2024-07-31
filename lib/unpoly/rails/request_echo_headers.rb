@@ -28,8 +28,10 @@ module Unpoly
         response.headers['X-Up-Method'] = request.method
       end
 
-      ::ActionController::Base.send(:include, self)
-
     end
   end
+end
+
+ActiveSupport.on_load(:action_controller_base) do
+  include Unpoly::Rails::RequestEchoHeaders
 end

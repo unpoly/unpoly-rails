@@ -33,8 +33,10 @@ module Unpoly
         end
       end
 
-      ActionController::Base.send(:include, self)
-
     end
   end
+end
+
+ActiveSupport.on_load(:action_controller_base) do
+  include Unpoly::Rails::RequestMethod
 end

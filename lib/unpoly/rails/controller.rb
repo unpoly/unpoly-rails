@@ -42,8 +42,10 @@ module Unpoly
         end
       end
 
-      ::ActionController::Base.prepend(self)
-
     end
   end
+end
+
+ActiveSupport.on_load(:action_controller_base) do
+  prepend Unpoly::Rails::Controller
 end
