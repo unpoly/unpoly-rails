@@ -5,13 +5,19 @@ module Unpoly
 
         def guard_json_decode(raw, &default)
           if raw.present?
-            begin
-              ActiveSupport::JSON.decode(raw)
-            rescue ActiveSupport::JSON.parse_error
-              # We would love to crash here, as it might indicate a bug in the frontend code.
-              # Unfortunately security scanners may be spamming malformed JSON in X-Up headers,
-              # DOSing us with error notifications.
-              ::Rails.logger.error('unpoly-rails: Ignoring malformed JSON in X-Up header')
+            if raw.is_a?(String)
+              begin
+                ActiveSupport::JSON.decode(raw)
+              rescue ActiveSupport::JSON.parse_error
+                # We would love to crash here, as it might indicate a bug in the frontend code.
+                # Unfortunately security scanners may be spamming malformed JSON in X-Up headers,
+                # DOSing us with error notifications.
+                ::Rails.logger.error('unpoly-rails: Ignoring malformed JSON in X-Up header')
+                default&.call
+              end
+            else
+              # Security spammers may pass nested param values in params like _up_context_changes.
+              ::Rails.logger.error('unpoly-rails: Ignoring nested value in _up param')
               default&.call
             end
           else

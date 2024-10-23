@@ -1144,6 +1144,16 @@ describe Unpoly::Rails::Controller, type: :request do
       ])
     end
 
+    it 'does not blow up when a bot passes a hash as a nested param value' do
+      get '/binding_test/redirect1?_up_context_changes[foo]=1&_up_events[foo]=1'
+      expect(response).to be_redirect
+    end
+
+    it 'does not blow up when a bot passes an array as a nested param value' do
+      get '/binding_test/redirect1?_up_context_changes[]=1&_up_events[]=1'
+      expect(response).to be_redirect
+    end
+
     it 'does not change the history' do
       get '/binding_test/redirect1', headers: { 'X-Up-Target' => '.foo' }
       expect(response).to be_redirect
