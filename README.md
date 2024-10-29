@@ -121,7 +121,7 @@ class NotesController < ApplicationController
     @note = Note.new(note_params)
     if @note.save
       if up.layer.overlay?
-        up.accept_layer(@note.id)
+        up.layer.accept(@note.id)
         head :no_content
       else
         redirect_to @note
