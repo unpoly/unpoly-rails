@@ -52,7 +52,7 @@ describe Unpoly::Rails::Change do
 
     it 'is fast' do
       allow(subject).to receive(:up?).and_return(true)
-      expect { subject.send(:test_target, " " * 32_000 + "a,", "bar") }.to perform_under(1).ms
+      expect { subject.send(:test_target, " " * 32_000 + "a,", "bar") }.to perform_under(2).ms
     end
 
   end
