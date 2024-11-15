@@ -1161,6 +1161,14 @@ describe Unpoly::Rails::Controller, type: :request do
       expect(response.headers['X-Up-Location']).to end_with('/redirect2')
     end
 
+    it 'preserves a server-set target over redirects' do
+      get '/binding_test/change_target_and_redirect', headers: { 'X-Up-Target' => '.target-from-client' }
+      expect(response).to be_redirect
+      expect(response.headers['X-Up-Target']).to eq('.target-from-server')
+      follow_redirect!
+      expect(response.headers['X-Up-Target']).to eq('.target-from-server')
+    end
+
   end
 
   describe 'echoing of the request location' do

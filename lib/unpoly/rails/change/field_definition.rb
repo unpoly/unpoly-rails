@@ -61,10 +61,15 @@ module Unpoly
             end
 
             define_method "#{method}_from_request_headers" do
+              raw_value = send("raw_#{method}_from_request_headers")
+              field.parse(raw_value)
+            end
+
+            define_method "raw_#{method}_from_request_headers" do
               header_name = send("#{method}_request_header_name")
               raw_value = request.headers[header_name]
               send("#{method}_request_header_accessed!")
-              field.parse(raw_value)
+              raw_value
             end
 
             define_method "#{method}_param_name" do
@@ -76,29 +81,26 @@ module Unpoly
               field.stringify(value)
             end
 
-            # define_method "#{name}_from_response_headers" do
-            #   raw_value = response.headers[field.header_name]
-            #   field.parse(raw_value)
-            # end
+            define_method "raw_#{method}_from_params" do
+              params[field.param_name]
+            end
 
             define_method "#{method}_from_params" do
-              raw_value = params[field.param_name]
+              raw_value = send("raw_#{method}_from_params")
               field.parse(raw_value)
             end
 
             define_method "#{method}_from_request" do
-              value = send("#{method}_from_request_headers")
-              if value.nil?
-                value = send("#{method}_from_params")
-              end
-              value
+              raw_value = send("raw_#{method}_from_params") || send("raw_#{method}_from_request_headers")
+              field.parse(raw_value)
             end
 
             define_method "write_#{method}_to_response_headers" do
               value = send(method)
               stringified = field.stringify(value)
+
               if stringified.present? # app servers don't like blank header values
-                header_name = send("#{method}_response_header_name" )
+                header_name = send("#{method}_response_header_name")
                 response.headers[header_name] = stringified
               end
             end

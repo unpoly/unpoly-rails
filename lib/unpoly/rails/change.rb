@@ -69,7 +69,7 @@ module Unpoly
         # The target has changed if either:
         # (1) The #target= setter was called, setting @server_target
         # (2) An up[target] param was set to preserve a previously changed target through a redirect.
-        (@server_target && @server_target != target_from_request_headers) || target_from_params
+        (@server_target && @server_target != target_from_request_headers) || !!target_from_params
       end
 
       ##

@@ -40,6 +40,11 @@ class BindingTestController < ApplicationController
     render plain: up.target
   end
 
+  def change_target_and_redirect
+    up.target = '.target-from-server'
+    redirect_to action: :redirect2
+  end
+
   private
 
   def content_security_policy_nonce
