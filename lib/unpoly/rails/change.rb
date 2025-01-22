@@ -66,7 +66,11 @@ module Unpoly
       end
 
       def target_changed?
-        # The target has changed if either:
+        # The target is present if the original request contained an X-Up-Target header.
+        # That means it is also present if it was never changed on the server.
+        #
+        # To check whether the server has *changed* the target, we must look at either condition:
+        #
         # (1) The #target= setter was called, setting @server_target
         # (2) An up[target] param was set to preserve a previously changed target through a redirect.
         (@server_target && @server_target != target_from_request_headers) || !!target_from_params
@@ -256,10 +260,7 @@ module Unpoly
 
           write_expire_cache_to_response_headers
           write_evict_cache_to_response_headers
-
-          if context_changes.present?
-            write_context_changes_to_response_headers
-          end
+          write_context_changes_to_response_headers
 
           if target_changed?
             # Only write the target to the response if it has changed.
@@ -405,18 +406,32 @@ module Unpoly
       end
 
       def fields_as_params
-        params = {}
-
         # When the browser sees a redirect it will automatically resend the request headers
         # from the original request. This means that headers we set on the client (X-Up-Target, X-Up-Mode, etc.)
         # are automatically preserved through redirects.
         #
         # We still need to handle all the response headers that we set on the server.
         # There are encoded as params.
-        params[context_changes_param_name] = serialized_context_changes      # server-set header must be sent if present
-        params[events_param_name]          = serialized_events               # server-set header must be sent if present
-        params[expire_cache_param_name]    = serialized_expire_cache         # server-set header must be sent if present
-        params[evict_cache_param_name]     = serialized_evict_cache          # server-set header must be sent if present
+        params = {}
+
+        if Util.present?(context_changes)
+          # Don't send an empty hash as _up_context_changes=%7B%7D
+          params[context_changes_param_name] = serialized_context_changes
+        end
+
+        if Util.present?(events)
+          # Don't send an empty array as _up_events=%5B%5D
+          params[events_param_name] = serialized_events
+        end
+
+        if Util.present?(expire_cache)
+          # Note that we must support evict_cache == false for up.cache.keep
+          params[expire_cache_param_name] = serialized_expire_cache
+        end
+
+        if Util.present?(evict_cache)
+          params[evict_cache_param_name] = serialized_evict_cache
+        end
 
         if target_changed?
           # Only write the target to the response if it has changed.

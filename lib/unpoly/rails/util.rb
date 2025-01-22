@@ -37,6 +37,14 @@ module Unpoly
           unicode_string.gsub(/[[:^ascii:]]/) { |char| "\\u" + char.ord.to_s(16).rjust(4, "0") }
         end
 
+        def blank?(value)
+          value.blank? && value != false
+        end
+
+        def present?(value)
+          !blank?(value)
+        end
+
       end
     end
   end

@@ -97,12 +97,20 @@ module Unpoly
 
             define_method "write_#{method}_to_response_headers" do
               value = send(method)
-              stringified = field.stringify(value)
-
-              if stringified.present? # app servers don't like blank header values
-                header_name = send("#{method}_response_header_name")
-                response.headers[header_name] = stringified
+              if Util.blank?(value)
+                # Blank values like [] have a present serialization ("[]".present? => true),
+                # so we must check the Ruby value here.
+                return
               end
+
+              stringified = field.stringify(value)
+              if Util.blank?(stringified)
+                # App servers don't like blank header values
+                return
+              end
+
+              header_name = send("#{method}_response_header_name")
+              response.headers[header_name] = stringified
             end
 
           end

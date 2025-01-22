@@ -40,6 +40,10 @@ class BindingTestController < ApplicationController
     render plain: up.target
   end
 
+  def empty_redirect
+    redirect_to action: :redirect2
+  end
+
   def change_target_and_redirect
     up.target = '.target-from-server'
     redirect_to action: :redirect2

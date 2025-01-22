@@ -809,6 +809,12 @@ describe Unpoly::Rails::Controller, type: :request do
       expect(response.headers['X-Up-Events']).to eq('[{"foo":"x\\u00e4y","type":"my:event"}]')
     end
 
+    it 'does not send an X-Up-Events response header if the server emitted no events' do
+      controller_eval { }
+
+      expect(response.headers['X-Up-Events']).to be_nil
+    end
+
   end
 
   describe 'up.layer.emit' do
@@ -1167,6 +1173,15 @@ describe Unpoly::Rails::Controller, type: :request do
       expect(response.headers['X-Up-Target']).to eq('.target-from-server')
       follow_redirect!
       expect(response.headers['X-Up-Target']).to eq('.target-from-server')
+    end
+
+    it 'does not encode empty fields into the query string' do
+      get '/binding_test/empty_redirect', headers: { 'X-Up-Version': '10.0.0', 'X-Up-Target': '#target' }
+      expect(response.headers['Location']).to_not include('_up_target')
+      expect(response.headers['Location']).to_not include('_up_context_changes')
+      expect(response.headers['Location']).to_not include('_up_events')
+      expect(response.headers['Location']).to_not include('_up_expire_cache')
+      expect(response.headers['Location']).to_not include('_up_evict_cache')
     end
 
   end
