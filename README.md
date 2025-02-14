@@ -270,51 +270,6 @@ For this to work you must also include the `<meta name="csp-nonce">` tag in the 
 > Prefixing nonces only works for `[up-on...]` attributes. You cannot use it for native HTML attributes like `[onclick]`.
 
 
-### Working with context
-
-Calling `up.context` will return the [context](https://unpoly.com/up.context) object of the targeted layer.
-
-The context is a JSON object shared between the frontend and the server.
-It persists for a series of Unpoly navigation, but is cleared when the user makes a full page load.
-Different Unpoly [layers](https://unpoly.com/up.layer) will usually have separate context objects,
-although layers may choose to share their context scope. 
-
-You may read and change the context object. Changes will be sent to the frontend with your response.
-
-```ruby
-class GamesController < ApplicationController
-
-  def restart
-    up.context[:lives] = 3
-    render 'stage1'
-  end
-
-end
-```
-
-Keys can be accessed as either strings or symbols:
-
-```ruby
-puts "You have " + up.layer.context[:lives] + " lives left"
-puts "You have " + up.layer.context['lives'] + " lives left"
-````
-
-You may delete a key from the frontend by calling `up.context.delete`:
-
-```ruby
-up.context.delete(:foo)
-````
-
-You may replace the entire context by calling `up.context.replace`: 
-
-```ruby
-context_from_file = JSON.parse(File.read('context.json))
-up.context.replace(context_from_file)
-```
-
-`up.context` is an alias for `up.layer.context`.
-
-
 ### Accessing the targeted layer
 
 Use the methods below to interact with the [layer](/up.layer) of the fragment being targeted.
@@ -496,6 +451,52 @@ HTTP method as `X-Up-Method`.
 If the initial page was loaded with a non-`GET` HTTP method, Unpoly will fall back to full page loads for all actions that require `pushState`.
 
 The reason for this is that some browsers remember the method of the initial page load and don't let the application change it, even with `pushState`. Thus, when the user reloads the page much later, an affected browser might request a `POST`, `PUT`, etc. instead of the correct method.
+
+
+### Working with context
+
+Calling `up.context` will return the [context](https://unpoly.com/up.context) object of the targeted layer.
+
+The context is a JSON object shared between the frontend and the server.
+It persists for a series of Unpoly navigation, but is cleared when the user makes a full page load.
+Different Unpoly [layers](https://unpoly.com/up.layer) will usually have separate context objects,
+although layers may choose to share their context scope.
+
+You may read and change the context object. Changes will be sent to the frontend with your response.
+
+```ruby
+class GamesController < ApplicationController
+
+  def restart
+    up.context[:lives] = 3
+    render 'stage1'
+  end
+
+end
+```
+
+Keys can be accessed as either strings or symbols:
+
+```ruby
+puts "You have " + up.layer.context[:lives] + " lives left"
+puts "You have " + up.layer.context['lives'] + " lives left"
+````
+
+You may delete a key from the frontend by calling `up.context.delete`:
+
+```ruby
+up.context.delete(:foo)
+````
+
+You may replace the entire context by calling `up.context.replace`:
+
+```ruby
+context_from_file = JSON.parse(File.read('context.json))
+up.context.replace(context_from_file)
+```
+
+`up.context` is an alias for `up.layer.context`.
+
 
 
 What you still need to do manually
