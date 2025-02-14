@@ -25,9 +25,9 @@ Now run `bundle install` and restart your development server.
 Installing frontend assets
 --------------------------
 
-### With esbuild or Webpacker
+### With npm
 
-If you're using [esbuild](https://esbuild.github.io/) or [Webpacker](https://edgeguides.rubyonrails.org/webpacker.html), install the [`unpoly` npm package](https://unpoly.com/install/npm) to get Unpoly's frontend files.
+If you're using a build tool like [esbuild](https://esbuild.github.io/) or [Webpacker](https://edgeguides.rubyonrails.org/webpacker.html), install the [`unpoly` npm package](https://unpoly.com/install/npm) to get Unpoly's frontend files.
 
 Now `import` Unpoly from your `application.js` pack:
 
@@ -41,7 +41,7 @@ You may need to import [additional files](https://unpoly.com/install), e.g. when
 
 ### With the Asset Pipeline
 
-If you're using the [Asset Pipeline](https://guides.rubyonrails.org/asset_pipeline.html), this `unpoly-rails` gem also contains Unpoly's frontend files. The files are automatically added to the Asset Pipeline's <a href="https://guides.rubyonrails.org/asset_pipeline.html#search-paths">search path</a>.
+If you're using the [Asset Pipeline](https://guides.rubyonrails.org/asset_pipeline.html), this `unpoly-rails` gem also contains Unpoly's frontend files.  The files are automatically added to the Asset Pipeline's <a href="https://guides.rubyonrails.org/asset_pipeline.html#search-paths">search path</a>.
 
 Add the following line to your `application.js` manifest:
 
@@ -330,6 +330,31 @@ Returns whether the layer targeted for a failed response is an overlay.
 #### `up.fail_layer.context`
 
 Returns the [context](https://unpoly.com/up.context) object of the layer targeted for a failed response.
+
+
+### Opening a new overlay
+
+You can request the frontend to [render your response in a new overlay](https://unpoly.com/X-Up-Open-Layer):
+
+```ruby
+up.layer.open
+```
+
+This will discard the [initial request target](#detecting-a-fragment-update)
+and render your response into [`:main`](https://unpoly.com/main). You can pass an explicit
+target as a `:target` option:
+
+```ruby
+up.layer.open(target: '#overlay')
+```
+
+Any [visual layer options](https://unpoly.com/customizing-overlays) can be also be passed as keyword arguments:
+
+
+```ruby
+up.layer.open(mode: 'drawer', position: 'right')
+```
+
 
 
 ### Expiring the client-side cache

@@ -773,6 +773,37 @@ describe Unpoly::Rails::Controller, type: :request do
 
   end
 
+  describe 'up.layer.open' do
+
+    it 'sets an `X-Up-Open-Layer: {}` header' do
+      controller_eval do
+        up.layer.open
+      end
+
+      expect(response.headers['X-Up-Open-Layer']).to eq('{}')
+    end
+
+    it 'sets the given visual layer options as a JSON-encoded value of X-Up-Open-Layer' do
+      options = { size: 'large', mode: 'drawer', target: '#overlay', dismissLabel: 'Close' }
+
+      controller_eval do
+        up.layer.open(options)
+
+      end
+
+      expect(response.headers['X-Up-Open-Layer']).to eq(options.to_json)
+    end
+
+    it 'escapes high-ASCII characters in the header value, so we can transport it over HTTP' do
+      controller_eval do
+        up.layer.open(dismissLabel: 'xäy')
+      end
+
+      expect(response.headers['X-Up-Open-Layer']).to eq('{"dismissLabel":"x\\u00e4y"}')
+    end
+
+  end
+
   describe 'up.emit' do
 
     it 'adds an entry into the X-Up-Events response header' do
@@ -821,7 +852,7 @@ describe Unpoly::Rails::Controller, type: :request do
 
     it 'adds an entry into the X-Up-Events response header with { layer: "current" } option' do
       controller_eval do
-        up.layer.emit('my:event', { 'foo' => 'bar' })
+        up.layer.emit('my:event', foo: 'bar')
       end
 
       expect(response.headers['X-Up-Events']).to match_json([

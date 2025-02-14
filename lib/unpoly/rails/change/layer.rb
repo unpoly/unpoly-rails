@@ -32,7 +32,7 @@ module Unpoly
 
         ##
         # TODO: Docs
-        def emit(type, options = {})
+        def emit(type, **options)
           change.emit(type, options.merge(layer: 'current'))
         end
 
@@ -49,6 +49,13 @@ module Unpoly
           overlay? or raise CannotClose, 'Cannot dismiss the root layer'
           change.response.headers['X-Up-Dismiss-Layer'] = Util.safe_json_encode(value)
         end
+
+        ##
+        # TODO: Docs
+        def open(**options)
+          change.response.headers['X-Up-Open-Layer'] = Util.safe_json_encode(options)
+        end
+
 
         private
 
