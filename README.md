@@ -356,7 +356,6 @@ up.layer.open(mode: 'drawer', position: 'right')
 ```
 
 
-
 ### Expiring the client-side cache
 
 The Unpoly frontend [caches server responses](https://unpoly.com/caching) for a few minutes, making requests to these URLs return instantly.
@@ -374,30 +373,6 @@ You may also expire a single URL or [URL pattern](https://unpoly.com/url-pattern
 up.cache.expire('/notes/*')
 ```
 
-You may also prevent cache expiration for an unsafe request:
-
-```ruby
-up.cache.expire(false)
-```
-
-Here is an longer example where the server uses careful cache management to avoid expiring too much of the client-side cache:
-
-```ruby
-def NotesController < ApplicationController
-
-  def create
-    @note = Note.create!(params[:note].permit(...))
-    if @note.save
-      up.cache.expire('/notes/*') # Only expire affected entries
-      redirect_to(@note)
-    else
-      up.cache.expire(false) # Keep the cache fresh because we haven't saved
-      render 'new'
-    end
-  end
-  ...
-end
-```
 
 ### Evicting pages from the client-side cache
 

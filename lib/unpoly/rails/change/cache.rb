@@ -15,17 +15,24 @@ module Unpoly
 
         # TODO: Docs
         def expire(pattern = '*')
-          change.expire_cache = pattern
+          if pattern == false
+            ActiveSupport::Deprecation.warn("up.cache.expire(false) has no effect. The server can no longer prevent cache expiration.")
+          else
+            change.expire_cache = pattern
+          end
         end
 
         # TODO: Docs
         def evict(pattern = '*')
-          change.evict_cache = pattern
+          if pattern == false
+            ActiveSupport::Deprecation.warn("up.cache.evict(false) has no effect. The server can no longer prevent cache eviction.")
+          else
+            change.evict_cache = pattern
+          end
         end
 
         def keep
-          ActiveSupport::Deprecation.warn("up.cache.keep is deprecated. Use up.cache.expire(false) instead.")
-          expire(false)
+          ActiveSupport::Deprecation.warn("up.cache.keep has no effect. The server can no longer prevent cache expiration.")
         end
 
         private

@@ -735,20 +735,30 @@ describe Unpoly::Rails::Controller, type: :request do
       end
 
       expect(response.headers['X-Up-Expire-Cache']).to eq('/foo/*')
-   end
+    end
+
+    it 'sets no useless `X-Up-Expire-Cache: false` header' do
+      controller_eval do
+        ActiveSupport::Deprecation.silence do
+          up.cache.expire(false)
+        end
+      end
+
+      expect(response.headers['X-Up-Expire-Cache']).to eq(nil)
+    end
 
   end
 
   describe 'up.cache.keep' do
 
-    it 'sets an `X-Up-Expire-Cache: false` header' do
+    it 'sets no useless `X-Up-Expire-Cache: false` header' do
       controller_eval do
         ActiveSupport::Deprecation.silence do
           up.cache.keep
         end
       end
 
-      expect(response.headers['X-Up-Expire-Cache']).to eq('false')
+      expect(response.headers['X-Up-Expire-Cache']).to eq(nil)
     end
 
   end
@@ -769,6 +779,16 @@ describe Unpoly::Rails::Controller, type: :request do
       end
 
       expect(response.headers['X-Up-Evict-Cache']).to eq('/foo/*')
+    end
+
+    it 'sets no useless `X-Up-Evict-Cache: false` header' do
+      controller_eval do
+        ActiveSupport::Deprecation.silence do
+          up.cache.evict(false)
+        end
+      end
+
+      expect(response.headers['X-Up-Evict-Cache']).to eq(nil)
     end
 
   end
