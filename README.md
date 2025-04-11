@@ -331,6 +331,18 @@ Returns whether the layer targeted for a failed response is an overlay.
 
 Returns the [context](https://unpoly.com/up.context) object of the layer targeted for a failed response.
 
+#### `up.origin_layer.mode`
+
+Returns the [mode](https://unpoly.com/up.layer.mode) of the layer that caused the request.
+
+#### `up.origin_layer.root?`
+
+Returns whether the layer that caused the request is the root layer.
+
+#### `up.origin_layer.overlay?`
+
+Returns whether the layer that caused the request is an overlay.
+
 
 ### Opening a new overlay
 

@@ -20,6 +20,7 @@ module Unpoly
       field Field::SeparatedValues.new(:validate_names), request_header_name: 'X-Up-Validate'
       field Field::String.new(:mode)
       field Field::String.new(:fail_mode)
+      field Field::String.new(:origin_mode)
       field Field::Hash.new(:context, default: -> { {} }), method: :input_context
       field Field::Hash.new(:fail_context, default: -> { {} }), method: :input_fail_context
       field Field::Hash.new(:context_changes, default: -> { {} }), response_header_name: 'X-Up-Context'
@@ -183,6 +184,12 @@ module Unpoly
       end
 
       ##
+      # TODO: Docs
+      memoize def origin_mode
+        origin_mode_from_request
+      end
+
+      ##
       # Returns the context object as sent from the frontend,
       # before any changes made on the server.
       #
@@ -307,6 +314,10 @@ module Unpoly
 
       memoize def fail_layer
         Layer.new(self, mode: fail_mode, context: fail_context)
+      end
+
+      memoize def origin_layer
+        Layer.new(self, mode: origin_mode)
       end
 
       memoize def cache

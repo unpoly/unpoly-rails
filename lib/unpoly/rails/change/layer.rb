@@ -4,7 +4,7 @@ module Unpoly
       class Layer
         class CannotClose < Error; end
 
-        def initialize(change, mode:, context:)
+        def initialize(change, mode:, context: {})
           @change = change
           @mode = mode.presence || 'root'
           @context = context
