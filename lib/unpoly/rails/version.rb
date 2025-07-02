@@ -3,6 +3,6 @@ module Unpoly
     ##
     # The current version of the unpoly-rails gem.
     # The first 3 digits should match the version of the Unpoly frontend code.
-    VERSION = '3.11.0.rc1'
+    VERSION = '3.11.0.rc12'
   end
 end
