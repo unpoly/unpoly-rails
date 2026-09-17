@@ -82,11 +82,11 @@ namespace :gem do
   desc 'Copy symlinked development assets for packaging'
   task :copy_assets do
     # Remove files from a previous build
-    Dir.glob('assets/unpoly/*.{css,js}').each do |file|
+    Dir.glob('assets/unpoly/*.{css,js,map}').each do |file|
       File.delete(file)
     end
 
-    Dir['assets/unpoly-dev/unpoly*.{css,js}'].each do |path|
+    Dir['assets/unpoly-dev/unpoly*.{css,js,map}'].each do |path|
       FileUtils.cp path, 'assets/unpoly'
     end
   end

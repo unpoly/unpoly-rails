@@ -9,9 +9,16 @@ Gem::Specification.new do |spec|
   spec.email         = ["henning.koch@makandra.de"]
   spec.description   = 'Rails bindings for Unpoly, the unobtrusive JavaScript framework'
   spec.summary       = spec.description
-  spec.homepage      = "https://github.com/unpoly/unpoly-rails"
+  spec.homepage      = "https://unpoly.com"
   spec.license       = "MIT"
-  spec.files         = Dir['lib/**/*.rb'] + Dir['assets/unpoly/*.{css,js}'] + %w[LICENSE README.md .yardopts]
+  spec.metadata      = {
+    'homepage_uri' => 'https://unpoly.com',
+    'documentation_uri' => 'https://unpoly.com',
+    'changelog_uri' => 'https://unpoly.com/changes',
+    'source_code_uri' => 'https://github.com/unpoly/unpoly-rails',
+    'bug_tracker_uri' => 'https://github.com/unpoly/unpoly-rails/issues',
+  }
+  spec.files         = Dir['lib/**/*.rb'] + Dir['assets/unpoly/*.{css,js,map}'] + %w[LICENSE README.md .yardopts]
   spec.executables   = []
   spec.test_files    = []
   spec.require_paths = %w[lib]
