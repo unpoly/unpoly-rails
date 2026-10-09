@@ -371,9 +371,9 @@ up.layer.open(mode: 'drawer', position: 'right')
 ### Expiring the client-side cache
 
 The Unpoly frontend [caches server responses](https://unpoly.com/caching) for a few minutes, making requests to these URLs return instantly.
-Only `GET` requests are cached. The entire cache is expired after every non-`GET` request (like `POST` or `PUT`).
+Only `GET` requests are cached. When the frontend sends a non-`GET` request (like `POST` or `PUT`), it expires the entire cache.
 
-The server may override these defaults. For instance, the server can expire Unpoly's client-side response cache, even for `GET` requests:
+The server can expire additional cache entries, even after a `GET` request:
 
 ```ruby
 up.cache.expire
@@ -388,9 +388,7 @@ up.cache.expire('/notes/*')
 
 ### Evicting pages from the client-side cache
 
-Instead of *expiring* pages from the cache you may also *evict*. The difference is that expired pages can still be rendered instantly and are then [revalidated](/caching#revalidation) with the server. Evicted pages are erased from the cache.
-
-You may also expire all entries matching an [URL pattern](https://unpoly.com/url-patterns):
+Instead of *expiring* pages from the cache you may also *evict*. The difference is that expired pages can still be rendered instantly and are then [revalidated](https://unpoly.com/caching#revalidation) with the server. Evicted pages are erased from the cache.
 
 To evict the entire client-side cache:
 
