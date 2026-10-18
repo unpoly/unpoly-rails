@@ -1,0 +1,27 @@
+---
+name: Tests
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    name: RSpec
+    steps:
+      # The specs don't need the unpoly repository: `assets/unpoly-dev` may be a
+      # dangling symlink, as the asset pipeline only receives its path.
+      - name: Check out unpoly-rails
+        uses: actions/checkout@v4
+
+      # Nokogiri and sqlite3 are locked for the `ruby` platform only and compile
+      # from source on the first run. The bundler cache keeps later runs fast.
+      - name: Install Ruby from .ruby-version
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ".ruby-version"
+          bundler-cache: true
+
+      - name: Run tests
+        run: bundle exec rspec
