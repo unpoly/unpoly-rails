@@ -304,7 +304,7 @@ Your action should either call `up.render_nothing` or respond with `text/html` c
 
 #### `up.layer.dismiss(value)`
 
-[Dismisses](https://unpoly.com/up.layer.dismisses) the current overlay.
+[Dismisses](https://unpoly.com/api/up.layer.dismiss) the current overlay.
 
 Does nothing if the root layer is targeted.
 
