@@ -27,7 +27,7 @@ Installing frontend assets
 
 ### With npm
 
-If you're using a build tool like [esbuild](https://esbuild.github.io/) or [Webpacker](https://edgeguides.rubyonrails.org/webpacker.html), install the [`unpoly` npm package](https://unpoly.com/install/npm) to get Unpoly's frontend files.
+If you're using a build tool like [esbuild](https://esbuild.github.io/) or [Webpacker](https://edgeguides.rubyonrails.org/webpacker.html), install the [`unpoly` npm package](https://unpoly.com/learn/install#npm) to get Unpoly's frontend files.
 
 Now `import` Unpoly from your `application.js` pack:
 
@@ -36,7 +36,7 @@ import 'unpoly/unpoly.js'
 import 'unpoly/unpoly.css'
 ```
 
-You may need to import [additional files](https://unpoly.com/install), e.g. when migrating from an old Unpoly version.
+You may need to import [additional files](https://unpoly.com/learn/install), e.g. when migrating from an old Unpoly version.
 
 
 ### With the Asset Pipeline
@@ -57,24 +57,24 @@ Also add the following line to your `application.css` manifest:
  */
 ```
 
-You may need to require [additional files](https://unpoly.com/install), e.g. when migrating from an old Unpoly version.
+You may need to require [additional files](https://unpoly.com/learn/install), e.g. when migrating from an old Unpoly version.
 
 
 Server protocol helpers
 -----------------------
 
-This `unpoly-rails` gem implements the <a href="https://unpoly.com/up.protocol">optional server protocol</a> by providing the following helper methods to your controllers, views and helpers.
+This `unpoly-rails` gem implements the <a href="https://unpoly.com/api/up.protocol">optional server protocol</a> by providing the following helper methods to your controllers, views and helpers.
 
 
 ### Detecting a fragment update
 
-Use `up?` to test whether the current request is a [fragment update](https://unpoly.com/up.link):
+Use `up?` to test whether the current request is a [fragment update](https://unpoly.com/api/up.link):
 
 ```ruby
 up? # => true or false
 ```
 
-To retrieve the CSS selector that is being [updated](https://unpoly.com/up.link), use `up.target`:
+To retrieve the CSS selector that is being [updated](https://unpoly.com/api/up.link), use `up.target`:
 
 ```ruby
 up.target # => '.content'
@@ -158,7 +158,7 @@ class UsersController < ApplicationController
 end
 ```
 
-If you wish to emit an event on the current [layer](https://unpoly.com/up.layer)
+If you wish to emit an event on the current [layer](https://unpoly.com/api/up.layer)
 instead of the `document`, use `up.layer.emit`:
 
 ```ruby
@@ -174,7 +174,7 @@ end
 
 ### Detecting an Unpoly form validation
 
-To test whether the current request is a [form validation](https://unpoly.com/input-up-validate):
+To test whether the current request is a [form validation](https://unpoly.com/api/up-validate):
 
 ```ruby
 up.validate?
@@ -201,7 +201,7 @@ class UsersController < ApplicationController
 end
 ```
 
-You may also access the [names of the fields that triggered the validation request](https://unpoly.com/X-Up-Validate):
+You may also access the [names of the fields that triggered the validation request](https://unpoly.com/api/X-Up-Validate):
 
 ```ruby
 up.validate_names # => ['email', 'password']
@@ -216,7 +216,7 @@ up.validate_name?('email') # => true
 
 ### Detecting a fragment reload
 
-When Unpoly [reloads](https://unpoly.com/up.reload) or [polls](https://unpoly.com/up-poll) a fragment, the server will often render the same HTML. You can configure your controller actions to only render HTML if the underlying content changed since an earlier request.
+When Unpoly [reloads](https://unpoly.com/api/up.reload) or [polls](https://unpoly.com/api/up-poll) a fragment, the server will often render the same HTML. You can configure your controller actions to only render HTML if the underlying content changed since an earlier request.
 
 Only rendering when needed saves <b>CPU time</b> on your server, which spends most of its response time rendering HTML. This also reduces the <b>bandwidth cost</b> for a request/response exchange to **~1 KB**.
 
@@ -244,7 +244,7 @@ end
 
 ### Allowing callbacks with a strict CSP
 
-When your Content Security Policy disallows `eval()`, Unpoly cannot directly run callbacks HTML attributes. This affects `[up-]` attributes like `[up-on-loaded]` or `[up-on-accepted]`. See [Unpoly's CSP guide](https://unpoly.com/csp) for details.
+When your Content Security Policy disallows `eval()`, Unpoly cannot directly run callbacks HTML attributes. This affects `[up-]` attributes like `[up-on-loaded]` or `[up-on-accepted]`. See [Unpoly's CSP guide](https://unpoly.com/learn/script-security) for details.
 
 The following callback would crash the fragment update with an error like `Uncaught EvalError: call to Function() blocked by CSP`:
 
@@ -278,7 +278,7 @@ Note that fragment updates may target different layers for successful (HTTP stat
 
 #### `up.layer.mode`
 
-Returns the [mode](https://unpoly.com/up.layer.mode) of the targeted layer (e.g. `"root"` or `"modal"`).
+Returns the [mode](https://unpoly.com/api/up.layer.mode) of the targeted layer (e.g. `"root"` or `"modal"`).
 
 #### `up.layer.root?`
 
@@ -290,12 +290,12 @@ Returns whether the targeted layer is an overlay (not the root layer).
 
 #### `up.layer.context`
 
-Returns the [context](https://unpoly.com/up.context) object of the targeted layer.
+Returns the [context](https://unpoly.com/api/up.context) object of the targeted layer.
 See documentation for `up.context`, which is an alias for `up.layer.context`.
 
 #### `up.layer.accept(value)`
 
-[Accepts](https://unpoly.com/up.layer.accept) the current overlay.
+[Accepts](https://unpoly.com/api/up.layer.accept) the current overlay.
 
 Does nothing if the root layer is targeted.
 
@@ -313,11 +313,11 @@ Your action should either call `up.render_nothing` or respond with `text/html` c
 
 #### `up.layer.emit(type, options)`
 
-[Emits an event](https://unpoly.com/up.layer.emit) on the targeted layer.
+[Emits an event](https://unpoly.com/api/up.layer.emit) on the targeted layer.
 
 #### `up.fail_layer.mode`
 
-Returns the [mode](https://unpoly.com/up.layer.mode) of the layer targeted for a failed response.
+Returns the [mode](https://unpoly.com/api/up.layer.mode) of the layer targeted for a failed response.
 
 #### `up.fail_layer.root?`
 
@@ -329,11 +329,11 @@ Returns whether the layer targeted for a failed response is an overlay.
 
 #### `up.fail_layer.context`
 
-Returns the [context](https://unpoly.com/up.context) object of the layer targeted for a failed response.
+Returns the [context](https://unpoly.com/api/up.context) object of the layer targeted for a failed response.
 
 #### `up.origin_layer.mode`
 
-Returns the [mode](https://unpoly.com/up.layer.mode) of the layer that caused the request.
+Returns the [mode](https://unpoly.com/api/up.layer.mode) of the layer that caused the request.
 
 #### `up.origin_layer.root?`
 
@@ -346,21 +346,21 @@ Returns whether the layer that caused the request is an overlay.
 
 ### Opening a new overlay
 
-You can request the frontend to [render your response in a new overlay](https://unpoly.com/X-Up-Open-Layer):
+You can request the frontend to [render your response in a new overlay](https://unpoly.com/api/X-Up-Open-Layer):
 
 ```ruby
 up.layer.open
 ```
 
 This will discard the [initial request target](#detecting-a-fragment-update)
-and render your response into [`:main`](https://unpoly.com/main). You can pass an explicit
+and render your response into [`:main`](https://unpoly.com/api/main). You can pass an explicit
 target as a `:target` option:
 
 ```ruby
 up.layer.open(target: '#overlay')
 ```
 
-Any [visual layer options](https://unpoly.com/customizing-overlays) can be also be passed as keyword arguments:
+Any [visual layer options](https://unpoly.com/learn/customizing-overlays) can be also be passed as keyword arguments:
 
 
 ```ruby
@@ -370,7 +370,7 @@ up.layer.open(mode: 'drawer', position: 'right')
 
 ### Expiring the client-side cache
 
-The Unpoly frontend [caches server responses](https://unpoly.com/caching) for a few minutes, making requests to these URLs return instantly.
+The Unpoly frontend [caches server responses](https://unpoly.com/learn/caching) for a few minutes, making requests to these URLs return instantly.
 Only `GET` requests are cached. When the frontend sends a non-`GET` request (like `POST` or `PUT`), it expires the entire cache.
 
 The server can expire additional cache entries, even after a `GET` request:
@@ -379,7 +379,7 @@ The server can expire additional cache entries, even after a `GET` request:
 up.cache.expire
 ```
 
-You may also expire a single URL or [URL pattern](https://unpoly.com/url-patterns):
+You may also expire a single URL or [URL pattern](https://unpoly.com/api/url-patterns):
 
 ```ruby
 up.cache.expire('/notes/*')
@@ -388,7 +388,7 @@ up.cache.expire('/notes/*')
 
 ### Evicting pages from the client-side cache
 
-Instead of *expiring* pages from the cache you may also *evict*. The difference is that expired pages can still be rendered instantly and are then [revalidated](https://unpoly.com/caching#revalidation) with the server. Evicted pages are erased from the cache.
+Instead of *expiring* pages from the cache you may also *evict*. The difference is that expired pages can still be rendered instantly and are then [revalidated](https://unpoly.com/learn/caching#revalidation) with the server. Evicted pages are erased from the cache.
 
 To evict the entire client-side cache:
 
@@ -396,7 +396,7 @@ To evict the entire client-side cache:
 up.cache.evict
 ```
 
-You may also evict a single URL or [URL pattern](https://unpoly.com/url-patterns):
+You may also evict a single URL or [URL pattern](https://unpoly.com/api/url-patterns):
 
 ```ruby
 up.cache.evict('/notes/*')
@@ -406,12 +406,12 @@ up.cache.evict('/notes/*')
 ### Unpoly headers are preserved through redirects
 
 `unpoly-rails` patches [`redirect_to`](https://api.rubyonrails.org/classes/ActionController/Redirecting.html#method-i-redirect_to)
-so [Unpoly-related request and response headers](https://unpoly.com/up.protocol) are preserved for the action you redirect to.
+so [Unpoly-related request and response headers](https://unpoly.com/api/up.protocol) are preserved for the action you redirect to.
 
 
 ### Accessing Unpoly request headers automatically sets a `Vary` response header
 
-Accessing [Unpoly-related request headers](https://unpoly.com/up.protocol) through helper methods like `up.target` will automatically add a [`Vary`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Vary) response header. This is to indicate that the request header influenced the response and the response should be cached separately for each request header value.
+Accessing [Unpoly-related request headers](https://unpoly.com/api/up.protocol) through helper methods like `up.target` will automatically add a [`Vary`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Vary) response header. This is to indicate that the request header influenced the response and the response should be cached separately for each request header value.
 
 For example, a controller may access the request's `X-Up-Mode` through the `up.layer.mode` helper:
 
@@ -465,11 +465,11 @@ The reason for this is that some browsers remember the method of the initial pag
 
 ### Working with context
 
-Calling `up.context` will return the [context](https://unpoly.com/up.context) object of the targeted layer.
+Calling `up.context` will return the [context](https://unpoly.com/api/up.context) object of the targeted layer.
 
 The context is a JSON object shared between the frontend and the server.
 It persists for a series of Unpoly navigation, but is cleared when the user makes a full page load.
-Different Unpoly [layers](https://unpoly.com/up.layer) will usually have separate context objects,
+Different Unpoly [layers](https://unpoly.com/api/up.layer) will usually have separate context objects,
 although layers may choose to share their context scope.
 
 You may read and change the context object. Changes will be sent to the frontend with your response.
@@ -514,7 +514,7 @@ What you still need to do manually
 
 ### Failed form submissions must return a non-200 status code
 
-Unpoly lets you submit forms via AJAX by using the [`form[up-submit]`](https://unpoly.com/form-up-submit) selector or [`up.submit()`](https://unpoly.com/up.submit) function.
+Unpoly lets you submit forms via AJAX by using the [`form[up-submit]`](https://unpoly.com/api/up-submit) selector or [`up.submit()`](https://unpoly.com/api/up.submit) function.
 
 For Unpoly to be able to detect a failed form submission,
 the form must be re-rendered with a non-200 HTTP status code.

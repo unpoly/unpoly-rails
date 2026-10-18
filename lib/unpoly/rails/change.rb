@@ -31,7 +31,7 @@ module Unpoly
 
       ##
       # Returns whether the current request is an
-      # [page fragment update](https://unpoly.com/up.replace) triggered by an
+      # [page fragment update](https://unpoly.com/api/up.replace) triggered by an
       # Unpoly frontend.
       def up?
         # This will eventually just check for the X-Up-Version header.
@@ -143,7 +143,7 @@ module Unpoly
       end
 
       ##
-      # If the current form submission is a [validation](https://unpoly.com/input-up-validate),
+      # If the current form submission is a [validation](https://unpoly.com/api/up-validate),
       # this returns the name attributes of the form fields that has triggered
       # the validation.
       #
@@ -164,7 +164,7 @@ module Unpoly
 
       ##
       # Returns whether the current form submission should be
-      # [validated](https://unpoly.com/input-up-validate) (and not be saved to the database).
+      # [validated](https://unpoly.com/api/up-validate) (and not be saved to the database).
       def validate?
         validate_names.present?
       end
