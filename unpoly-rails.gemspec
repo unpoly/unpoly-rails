@@ -14,7 +14,7 @@ Gem::Specification.new do |spec|
   spec.metadata      = {
     'homepage_uri' => 'https://unpoly.com',
     'documentation_uri' => 'https://unpoly.com',
-    'changelog_uri' => 'https://unpoly.com/changes',
+    'changelog_uri' => 'https://github.com/unpoly/unpoly-rails/blob/master/CHANGELOG.md',
     'source_code_uri' => 'https://github.com/unpoly/unpoly-rails',
     'bug_tracker_uri' => 'https://github.com/unpoly/unpoly-rails/issues',
   }
