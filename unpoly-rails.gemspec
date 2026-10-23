@@ -18,7 +18,7 @@ Gem::Specification.new do |spec|
     'source_code_uri' => 'https://github.com/unpoly/unpoly-rails',
     'bug_tracker_uri' => 'https://github.com/unpoly/unpoly-rails/issues',
   }
-  spec.files         = Dir['lib/**/*.rb'] + Dir['assets/unpoly/*.{css,js,map}'] + %w[LICENSE README.md .yardopts]
+  spec.files         = Dir['lib/**/*.rb'] + Dir['assets/unpoly/*.{css,js,map}'] + %w[LICENSE README.md CHANGELOG.md .yardopts]
   spec.executables   = []
   spec.test_files    = []
   spec.require_paths = %w[lib]
