@@ -1,6 +1,13 @@
+require 'active_support/core_ext/enumerable'
+
 module Unpoly
   module Rails
     class Util
+
+      # Unpoly writes acronyms in uppercase when they don't start a name,
+      # e.g. dismissARIALabel or normalizeURL.
+      ACRONYMS = %w[ARIA URL HTML JSON ID].index_by(&:downcase)
+
       class << self
 
         def guard_json_decode(raw, &default)
@@ -35,6 +42,15 @@ module Unpoly
 
         def escape_non_ascii(unicode_string)
           unicode_string.gsub(/[[:^ascii:]]/) { |char| "\\u" + char.ord.to_s(16).rjust(4, "0") }
+        end
+
+        # Converts a snake_case option name like :on_accepted_reload to Unpoly's
+        # camelCase name like "onAcceptedReload". Names that are already camelCased
+        # are kept unchanged.
+        #
+        # We don't use ActiveSupport's #camelize, so the app's inflections don't apply.
+        def camelize_option_name(name)
+          name.to_s.gsub(/_([a-z\d]+)/) { ACRONYMS[$1] || $1.capitalize }
         end
 
         def blank?(value)

@@ -53,6 +53,9 @@ module Unpoly
         ##
         # TODO: Docs
         def open(**options)
+          # Only convert top-level names. Nested values, like the keys of a { context },
+          # are app data and pass through unchanged.
+          options = options.transform_keys { |name| Util.camelize_option_name(name) }
           change.response.headers['X-Up-Open-Layer'] = Util.safe_json_encode(options)
         end
 

@@ -360,12 +360,29 @@ target as a `:target` option:
 up.layer.open(target: '#overlay')
 ```
 
-Any [visual layer options](https://unpoly.com/learn/customizing-overlays) can be also be passed as keyword arguments:
+Any [visual layer options](https://unpoly.com/learn/customizing-overlays) can also be passed as keyword arguments:
 
 
 ```ruby
 up.layer.open(mode: 'drawer', position: 'right')
 ```
+
+To run code when the overlay is accepted, pass a [callback](https://unpoly.com/api/X-Up-Open-Layer#callbacks) as a string of JavaScript.
+Wrap it in [`up.safe_callback`](#allowing-callbacks-with-a-strict-csp) so it also runs with a strict CSP:
+
+```ruby
+up.layer.open(on_accepted: up.safe_callback("up.reload('.company-list')"))
+```
+
+To only reload an element after the overlay is accepted, pass its selector as `:on_accepted_reload`.
+This runs no JavaScript, so it needs no `up.safe_callback`:
+
+```ruby
+up.layer.open(on_accepted_reload: '.company-list')
+```
+
+Option names are converted to Unpoly's camelCase names, e.g. `:on_accepted_reload` becomes `onAcceptedReload`.
+Keys inside the `:context` option are passed through unchanged.
 
 
 ### Expiring the client-side cache

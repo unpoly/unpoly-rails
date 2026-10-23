@@ -822,6 +822,42 @@ describe Unpoly::Rails::Controller, type: :request do
       expect(response.headers['X-Up-Open-Layer']).to eq('{"dismissLabel":"x\\u00e4y"}')
     end
 
+    describe 'option names' do
+
+      it 'converts snake_case names to camelCase' do
+        controller_eval do
+          up.layer.open(on_accepted_reload: '.company-list')
+        end
+
+        expect(response.headers['X-Up-Open-Layer']).to match_json({ onAcceptedReload: '.company-list' })
+      end
+
+      it 'writes acronyms in uppercase' do
+        controller_eval do
+          up.layer.open(dismiss_aria_label: 'Close')
+        end
+
+        expect(response.headers['X-Up-Open-Layer']).to match_json({ dismissARIALabel: 'Close' })
+      end
+
+      it 'keeps camelCase names unchanged' do
+        controller_eval do
+          up.layer.open(onAccepted: 'up.reload()', dismissARIALabel: 'Close')
+        end
+
+        expect(response.headers['X-Up-Open-Layer']).to match_json({ onAccepted: 'up.reload()', dismissARIALabel: 'Close' })
+      end
+
+      it 'does not convert the keys of a context' do
+        controller_eval do
+          up.layer.open(context: { user_id: 5 })
+        end
+
+        expect(response.headers['X-Up-Open-Layer']).to match_json({ context: { user_id: 5 } })
+      end
+
+    end
+
   end
 
   describe 'up.emit' do
