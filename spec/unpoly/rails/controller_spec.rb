@@ -1323,6 +1323,30 @@ describe Unpoly::Rails::Controller, type: :request do
       expect(response.headers['X-Up-Target']).to eq('.target-from-server')
     end
 
+    it 'inserts Unpoly-related params before a #hash in the redirect URL' do
+      controller_eval(headers: { 'X-Up-Target' => '.foo' }) do
+        up.emit('event1')
+        redirect_to '/binding_test/redirect2#comments'
+      end
+
+      expect(response).to be_redirect
+      expect(response.headers['Location']).to match(%r{/binding_test/redirect2\?_up_events=[^#]+#comments\z})
+      follow_redirect!
+      expect(response.headers['X-Up-Events']).to match_json([
+        { type: 'event1' }
+      ])
+    end
+
+    it 'inserts Unpoly-related params before a #hash when the redirect URL already has a query' do
+      controller_eval(headers: { 'X-Up-Target' => '.target-from-client' }) do
+        up.target = '.target-from-server'
+        redirect_to '/binding_test/redirect2?page=2#comments'
+      end
+
+      expect(response).to be_redirect
+      expect(response.headers['Location']).to match(%r{/binding_test/redirect2\?page=2&_up_target=[^#]+#comments\z})
+    end
+
     it 'does not encode empty fields into the query string' do
       get '/binding_test/empty_redirect', headers: { 'X-Up-Version': '10.0.0', 'X-Up-Target': '#target' }
       expect(response.headers['Location']).to_not include('_up_target')

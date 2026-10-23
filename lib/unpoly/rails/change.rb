@@ -462,8 +462,10 @@ module Unpoly
         if params.blank?
           url
         else
+          # A #hash must remain at the end of the URL.
+          url, hash_sign, hash = url.partition('#')
           separator = url.include?('?') ? '&' : '?'
-          [url, params.to_query].join(separator)
+          [url, separator, params.to_query, hash_sign, hash].join
         end
       end
 
