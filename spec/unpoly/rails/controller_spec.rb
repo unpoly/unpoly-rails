@@ -1344,7 +1344,7 @@ describe Unpoly::Rails::Controller, type: :request do
       end
 
       expect(response).to be_redirect
-      expect(response.headers['Location']).to match(%r{/binding_test/redirect2\?page=2&_up_target=[^#]+#comments\z})
+      expect(response.headers['Location']).to match(%r{/binding_test/redirect2\?page=2&[^#]*_up_target=[^#]+#comments\z})
     end
 
     it 'does not encode empty fields into the query string' do
@@ -1354,6 +1354,78 @@ describe Unpoly::Rails::Controller, type: :request do
       expect(response.headers['Location']).to_not include('_up_events')
       expect(response.headers['Location']).to_not include('_up_expire_cache')
       expect(response.headers['Location']).to_not include('_up_evict_cache')
+    end
+
+    describe 'when the redirect URL has a #hash' do
+
+      it 'passes the #hash as a param, so it can be echoed in X-Up-Location after the redirect' do
+        controller_eval(headers: { 'X-Up-Target' => '.foo' }) do
+          redirect_to action: :redirect2, anchor: 'comments'
+        end
+
+        expect(response).to be_redirect
+        expect(response.headers['Location']).to end_with('/binding_test/redirect2?_up_location_hash=comments#comments')
+        follow_redirect!
+        expect(response.headers['X-Up-Location']).to end_with('/binding_test/redirect2#comments')
+      end
+
+      it 'keeps other params in the echoed location' do
+        controller_eval(headers: { 'X-Up-Target' => '.foo' }) do
+          redirect_to '/binding_test/redirect2?page=2#comments'
+        end
+
+        expect(response.headers['Location']).to end_with('/binding_test/redirect2?page=2&_up_location_hash=comments#comments')
+        follow_redirect!
+        expect(response.headers['X-Up-Location']).to end_with('/binding_test/redirect2?page=2#comments')
+      end
+
+      it 'passes the #hash together with other Unpoly-related params' do
+        controller_eval(headers: { 'X-Up-Target' => '.target-from-client' }) do
+          up.target = '.target-from-server'
+          up.emit('event1')
+          redirect_to '/binding_test/redirect2#comments'
+        end
+
+        expect(response.headers['Location']).to include('_up_target=')
+        expect(response.headers['Location']).to include('_up_events=')
+        expect(response.headers['Location']).to include('_up_location_hash=comments')
+        follow_redirect!
+        expect(response.headers['X-Up-Location']).to end_with('/binding_test/redirect2#comments')
+        expect(response.headers['X-Up-Target']).to eq('.target-from-server')
+        expect(response.headers['X-Up-Events']).to match_json([
+          { type: 'event1' }
+        ])
+      end
+
+      it 'echoes a #hash with special characters as it appeared in the redirect URL' do
+        controller_eval(headers: { 'X-Up-Target' => '.foo' }) do
+          redirect_to action: :redirect2, anchor: 'a b/ü'
+        end
+
+        follow_redirect!
+        expect(response.headers['X-Up-Location']).to end_with('/binding_test/redirect2#a%20b/%C3%BC')
+      end
+
+      it 'keeps the #hash over a following redirect to a URL without a #hash, like a browser' do
+        controller_eval(headers: { 'X-Up-Target' => '.foo' }) do
+          redirect_to '/binding_test/redirect1#comments'
+        end
+
+        follow_redirect!
+        expect(response).to be_redirect
+        expect(response.headers['Location']).to include('_up_location_hash=comments')
+        follow_redirect!
+        expect(response.headers['X-Up-Location']).to end_with('/binding_test/redirect2#comments')
+      end
+
+      it 'does not change the redirect URL for a request without Unpoly' do
+        controller_eval do
+          redirect_to '/binding_test/redirect2#comments'
+        end
+
+        expect(response.headers['Location']).to end_with('/binding_test/redirect2#comments')
+      end
+
     end
 
   end
@@ -1380,6 +1452,26 @@ describe Unpoly::Rails::Controller, type: :request do
       it 'does not mangle array params (BUGFIX)' do
         get '/binding_test/text?_up_1=x&foo%5B%5D=bar&foo%5B%5D=qux&_up_location=up_location'
         expect(response.headers['X-Up-Location']).to end_with('/binding_test/text?foo%5B%5D=bar&foo%5B%5D=qux')
+      end
+
+    end
+
+    describe 'when the request URL contains a _up_location_hash param' do
+
+      it 'appends the #hash to the echoed location' do
+        get '/binding_test/text?foo=bar&_up_location_hash=comments'
+        expect(response.headers['X-Up-Location']).to end_with('/binding_test/text?foo=bar#comments')
+      end
+
+      it 'percent-encodes characters that are not allowed in a #hash, so a line break cannot inject a header' do
+        get '/binding_test/text?_up_location_hash=a%23b%C3%BC%0D%0AX-Injected:%20yes'
+        expect(response.headers['X-Up-Location']).to end_with('/binding_test/text#a%23b%C3%BC%0D%0AX-Injected:%20yes')
+        expect(response.headers['X-Injected']).to be_nil
+      end
+
+      it 'ignores a nested param value' do
+        get '/binding_test/text?_up_location_hash[]=comments'
+        expect(response.headers['X-Up-Location']).to end_with('/binding_test/text')
       end
 
     end

@@ -20,9 +20,16 @@ module Unpoly
       private
 
       def set_up_request_echo_headers
-        request_url_without_up_params = up.request_url_without_up_params
-        unless request_url_without_up_params == request.original_url
-          response.headers['X-Up-Location'] = up.request_url_without_up_params
+        location = up.request_url_without_up_params
+
+        # The browser never sends a #hash to the server.
+        # When we redirected to a URL with a #hash, we passed it as a param.
+        if (hash = up.location_hash)
+          location += "##{hash}"
+        end
+
+        unless location == request.original_url
+          response.headers['X-Up-Location'] = location
         end
 
         response.headers['X-Up-Method'] = request.method

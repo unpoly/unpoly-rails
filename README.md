@@ -425,6 +425,10 @@ up.cache.evict('/notes/*')
 `unpoly-rails` patches [`redirect_to`](https://api.rubyonrails.org/classes/ActionController/Redirecting.html#method-i-redirect_to)
 so [Unpoly-related request and response headers](https://unpoly.com/api/up.protocol) are preserved for the action you redirect to.
 
+A `#hash` in the redirect URL is also kept for fragment updates, e.g. `redirect_to post_path(@post, anchor: 'comments')`.
+Unpoly could otherwise not see it, as the browser follows the redirect in the background.
+With Unpoly 3.15 or later, the element with that ID is revealed and the `#hash` shows in the address bar.
+
 
 ### Accessing Unpoly request headers automatically sets a `Vary` response header
 

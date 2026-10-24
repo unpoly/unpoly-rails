@@ -31,7 +31,8 @@ module Unpoly
       delegate :up?, :unpoly?, to: :up
 
       ##
-      # TODO: Docs
+      # Preserves Unpoly-related response headers and a #hash for the action
+      # you redirect to. They are passed as _up_* params.
       def redirect_to(target, *args)
         up.no_vary do
           if up?

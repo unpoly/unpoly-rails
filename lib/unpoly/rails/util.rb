@@ -44,6 +44,14 @@ module Unpoly
           unicode_string.gsub(/[[:^ascii:]]/) { |char| "\\u" + char.ord.to_s(16).rjust(4, "0") }
         end
 
+        # Percent-encodes all characters that are not allowed in a URL's #hash (RFC 3986).
+        # Existing escape sequences like %20 are kept.
+        def escape_url_fragment(fragment)
+          fragment.gsub(%r{[^A-Za-z0-9\-._~!$&'()*+,;=:@/?%]}) do |char|
+            char.bytes.map { |byte| '%%%02X' % byte }.join
+          end
+        end
+
         # Converts a snake_case option name like :on_accepted_reload to Unpoly's
         # camelCase name like "onAcceptedReload". Names that are already camelCased
         # are kept unchanged.

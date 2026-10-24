@@ -9,6 +9,8 @@ module Unpoly
       include Memoized
       include FieldDefinition
 
+      LOCATION_HASH_PARAM_NAME = "#{Field::PARAM_PREFIX}location_hash"
+
       def initialize(controller)
         @controller = controller
       end
@@ -279,7 +281,30 @@ module Unpoly
       end
 
       def url_with_field_values(url)
-        append_params_to_url(url, fields_as_params)
+        up_params = fields_as_params
+
+        # The browser follows a redirect for a fragment update without telling us
+        # or Unpoly about the #hash of the redirect URL. We pass the #hash as a param,
+        # so we can echo it in X-Up-Location after the redirect.
+        #
+        # Like a browser, we keep the #hash of an earlier redirect if the URL has no #hash.
+        if (hash = url.partition('#').last.presence || location_hash)
+          up_params[LOCATION_HASH_PARAM_NAME] = hash
+        end
+
+        append_params_to_url(url, up_params)
+      end
+
+      # Returns the #hash of the URL we redirected to, without the leading "#".
+      # Used by RequestEchoHeaders.
+      def location_hash
+        hash = params[LOCATION_HASH_PARAM_NAME]
+
+        # Security scanners may pass nested param values or line breaks.
+        # The #hash will end up in a response header.
+        if hash.is_a?(::String) && hash.present?
+          Util.escape_url_fragment(hash)
+        end
       end
 
       # Used by RequestEchoHeaders to prevent up[...] params from showing up

@@ -9,6 +9,7 @@ Each release also bundles Unpoly's frontend files for the asset pipeline. If you
 
 - `up.layer.open` converts snake_case option names to Unpoly's camelCase names, e.g. `:on_accepted_reload` becomes `onAcceptedReload`. Keys inside the `:context` option are passed through unchanged.
 - Fix Unpoly params being lost when redirecting to a URL with a `#hash`. The params were appended after the hash, so changes like a new target, events or context changes did not survive the redirect.
+- A `#hash` in a redirect URL is kept for fragment updates, e.g. `redirect_to post_path(@post, anchor: 'comments')`. The gem passes it as a `_up_location_hash` param and echoes it in the [`X-Up-Location`](https://unpoly.com/api/X-Up-Location) header after the redirect. Unpoly then reveals the element with that ID and shows the `#hash` in the address bar. Requires Unpoly 3.15 or later.
 - The gem now includes source maps for the bundled frontend files.
 - The gem's metadata links to unpoly.com, the changelog, the source code and the issue tracker.
 
