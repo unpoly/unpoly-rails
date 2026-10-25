@@ -5,8 +5,9 @@ Changes to the unpoly-rails gem. For changes to Unpoly itself, see https://unpol
 Each release also bundles Unpoly's frontend files for the asset pipeline. If your app installs Unpoly from npm, only the server-side changes matter to you, and any recent gem version will do.
 
 
-## Unreleased
+## 3.15.0
 
+- Bundles Unpoly 3.15.0 for the asset pipeline.
 - `up.layer.open` converts snake_case option names to Unpoly's camelCase names, e.g. `:on_accepted_reload` becomes `onAcceptedReload`. Keys inside the `:context` option are passed through unchanged.
 - Fix Unpoly params being lost when redirecting to a URL with a `#hash`. The params were appended after the hash, so changes like a new target, events or context changes did not survive the redirect.
 - A `#hash` in a redirect URL is kept for fragment updates, e.g. `redirect_to post_path(@post, anchor: 'comments')`. The gem passes it as a `_up_location_hash` param and echoes it in the [`X-Up-Location`](https://unpoly.com/api/X-Up-Location) header after the redirect. Unpoly then reveals the element with that ID and shows the `#hash` in the address bar. Requires Unpoly 3.15 or later.
@@ -14,32 +15,32 @@ Each release also bundles Unpoly's frontend files for the asset pipeline. If you
 - The gem's metadata links to unpoly.com, the changelog, the source code and the issue tracker.
 
 
-## 3.14.3 (2026-05-04)
+## 3.14.3
 
 - Bundles Unpoly 3.14.3 for the asset pipeline.
 
 
-## 3.14.2 (2026-04-13)
+## 3.14.2
 
 - Bundles Unpoly 3.14.2 for the asset pipeline.
 
 
-## 3.14.1 (2026-03-30)
+## 3.14.1
 
 - Bundles Unpoly 3.14.1 for the asset pipeline.
 
 
-## 3.14.0 (2026-03-14)
+## 3.14.0
 
 - Bundles Unpoly 3.14.0 for the asset pipeline.
 
 
-## 3.12.0 (2025-09-24)
+## 3.12.0
 
 - Bundles Unpoly 3.12.0 for the asset pipeline.
 
 
-## 3.11.0 (2025-07-03)
+## 3.11.0
 
 - New `up.layer.open` renders the response in a new overlay, using an [`X-Up-Open-Layer`](https://unpoly.com/api/X-Up-Open-Layer) header. Overlay options like `mode: 'drawer'` can be passed as keyword arguments.
 - New `up.origin_layer.mode`, `up.origin_layer.root?` and `up.origin_layer.overlay?` tell you about the layer that caused the request, using the [`X-Up-Origin-Mode`](https://unpoly.com/api/X-Up-Origin-Mode) header.
@@ -47,171 +48,171 @@ Each release also bundles Unpoly's frontend files for the asset pipeline. If you
 - Bundles Unpoly 3.11.0 for the asset pipeline.
 
 
-## 3.10.2 (2025-02-19)
+## 3.10.2
 
 - Bundles Unpoly 3.10.2 for the asset pipeline.
 
 
-## 3.10.0 (2025-01-23)
+## 3.10.0
 
 - No longer send empty response headers like `X-Up-Events: []`.
 - When redirecting, no longer add empty params like `_up_context_changes=%7B%7D` or `_up_events=%5B%5D` to the redirect URL.
 - Bundles Unpoly 3.10.0 for the asset pipeline.
 
 
-## 3.9.5 (2024-12-13)
+## 3.9.5
 
 - Bundles Unpoly 3.9.5 for the asset pipeline.
 
 
-## 3.9.3.1 (2024-11-15)
+## 3.9.3.1
 
 - Preserve an `X-Up-Target` changed by the server through a redirect. The original target, which the browser re-sends with the redirected request, no longer overrides it.
 
 
-## 3.9.3 (2024-10-30)
+## 3.9.3
 
 - Bundles Unpoly 3.9.3 for the asset pipeline.
 
 
-## 3.9.2.1 (2024-10-23)
+## 3.9.2.1
 
 - Ignore nested values in `_up_*` params (e.g. `_up_context_changes[foo]=bar`) instead of raising an error. These are often sent by security scanners. The value is logged as an error.
 
 
-## 3.9.2 (2024-10-04)
+## 3.9.2
 
 - Bundles Unpoly 3.9.2 for the asset pipeline.
 
 
-## 3.9.1 (2024-09-16)
+## 3.9.1
 
 - Bundles Unpoly 3.9.1 for the asset pipeline.
 
 
-## 3.9.0 (2024-08-28)
+## 3.9.0
 
 - Bundles Unpoly 3.9.0 for the asset pipeline.
 
 
-## 3.8.0.1 (2024-07-31)
+## 3.8.0.1
 
 - Loading the gem no longer loads `ActionController::Base` early, before your app's configuration is applied. The controller extensions are now added with `ActiveSupport.on_load(:action_controller_base)`.
 
 
-## 3.8.0 (2024-06-21)
+## 3.8.0
 
 - Bundles Unpoly 3.8.0 for the asset pipeline.
 
 
-## 3.7.3.2 (2024-02-28)
+## 3.7.3.2
 
 - `up.target?` now returns `true` for optional targets, e.g. when the request targets `#foo:maybe` and you test for `#foo`.
 
 
-## 3.7.3.1 (2024-01-29)
+## 3.7.3.1
 
 - When an `X-Up-*` header that should contain a JSON object contains another JSON value (like an array or a string), log an error and use an empty hash.
 
 
-## 3.7.3 (2024-01-24)
+## 3.7.3
 
 - Bundles Unpoly 3.7.3 for the asset pipeline.
 
 
-## 3.7.2 (2024-01-11)
+## 3.7.2
 
 - Bundles Unpoly 3.7.2 for the asset pipeline.
 
 
-## 3.7.1 (2024-01-08)
+## 3.7.1
 
 - Bundles Unpoly 3.7.1 for the asset pipeline.
 
 
-## 3.7.0.1 (2024-01-07)
+## 3.7.0.1
 
 - Re-release of 3.7.0 without changes, to make RubyGems redistribute the gem.
 
 
-## 3.7.0 (2024-01-07)
+## 3.7.0
 
 - Bundles Unpoly 3.7.0 for the asset pipeline.
 
 
-## 3.6.1.1 (2023-12-21)
+## 3.6.1.1
 
 - Parse `X-Up-Target` and `Vary` headers without a regular expression that could be slow for long header values.
 
 
-## 3.6.1 (2023-12-09)
+## 3.6.1
 
 - Bundles Unpoly 3.6.1 for the asset pipeline.
 
 
-## 3.6.0 (2023-11-29)
+## 3.6.0
 
 - Fix an error for requests whose URL contains `_up_` in its path, but has no query string.
 - Bundles Unpoly 3.6.0 for the asset pipeline.
 
 
-## 3.5.2 (2023-11-16)
+## 3.5.2
 
 - Bundles Unpoly 3.5.2 for the asset pipeline.
 
 
-## 3.5.1 (2023-11-14)
+## 3.5.1
 
 - Bundles Unpoly 3.5.1 for the asset pipeline.
 
 
-## 3.5.0 (2023-11-09)
+## 3.5.0
 
 - Bundles Unpoly 3.5.0 for the asset pipeline.
 
 
-## 3.3.0.1 (2023-11-02)
+## 3.3.0.1
 
 - Malformed JSON in `X-Up-*` headers no longer raises an error. It is logged as an error and ignored. Security scanners often send such headers.
 
 
-## 3.3.0 (2023-07-16)
+## 3.3.0
 
 - Bundles Unpoly 3.3.0 for the asset pipeline.
 
 
-## 3.2.2.1 (2023-07-05)
+## 3.2.2.1
 
 - New `up.validate_name?('email')` tests whether a given field is being [validated](https://unpoly.com/api/X-Up-Validate).
 - Fix `up.validate_name` raising a `NameError` (broken since 3.0.0).
 
 
-## 3.2.2 (2023-07-05)
+## 3.2.2
 
 - Bundles Unpoly 3.2.2 for the asset pipeline.
 
 
-## 3.2.1 (2023-06-28)
+## 3.2.1
 
 - Bundles Unpoly 3.2.1 for the asset pipeline.
 
 
-## 3.2.0 (2023-05-25)
+## 3.2.0
 
 - Bundles Unpoly 3.2.0 for the asset pipeline.
 
 
-## 3.1.1 (2023-05-10)
+## 3.1.1
 
 - Bundles Unpoly 3.1.1 for the asset pipeline.
 
 
-## 3.1.0 (2023-05-04)
+## 3.1.0
 
 - Bundles Unpoly 3.1.0 for the asset pipeline.
 
 
-## 3.0.0 (2023-04-17)
+## 3.0.0
 
 - New `up.validate_names` returns the names of all fields that triggered a [validation](https://unpoly.com/api/X-Up-Validate). Unpoly 3 may batch multiple validations into a single request.
 - Removed `up.validate`. Use `up.validate_name` or `up.validate_names` instead.
@@ -227,88 +228,88 @@ Each release also bundles Unpoly's frontend files for the asset pipeline. If you
 - Bundles Unpoly 3.0.0 for the asset pipeline.
 
 
-## 2.7.2.2 (2023-03-30)
+## 2.7.2.2
 
 - Only send an `X-Up-Location` header when the request URL contains `_up_*` params that must be removed.
 
 
-## 2.7.2.1 (2023-03-03)
+## 2.7.2.1
 
 - Escape non-ASCII characters in JSON response headers like `X-Up-Events`, `X-Up-Context` or `X-Up-Accept-Layer`, so they can be transported over HTTP.
 
 
-## 2.7.2 (2023-03-02)
+## 2.7.2
 
 - Bundles Unpoly 2.7.2 for the asset pipeline.
 
 
-## 2.7.1.1 (2022-11-21)
+## 2.7.1.1
 
 - Fix the serialization of array params (like `ids[]=1&ids[]=2`) in the `X-Up-Location` header.
 
 
-## 2.7.1 (2022-11-10)
+## 2.7.1
 
 - Bundles Unpoly 2.7.1 for the asset pipeline.
 
 
-## 2.7.0 (2022-11-10)
+## 2.7.0
 
 - Bundles Unpoly 2.7.0 for the asset pipeline.
 
 
-## 2.6.1 (2022-06-10)
+## 2.6.1
 
 - Bundles Unpoly 2.6.1 for the asset pipeline.
 
 
-## 2.6.0 (2022-05-12)
+## 2.6.0
 
 - Bundles Unpoly 2.6.0 for the asset pipeline.
 
 
-## 2.5.3 (2022-04-06)
+## 2.5.3
 
 - Bundles Unpoly 2.5.3 for the asset pipeline.
 
 
-## 2.5.2 (2022-03-04)
+## 2.5.2
 
 - Bundles Unpoly 2.5.2 for the asset pipeline.
 
 
-## 2.5.1 (2022-02-18)
+## 2.5.1
 
 - Bundles Unpoly 2.5.1 for the asset pipeline.
 
 
-## 2.5.0 (2021-12-14)
+## 2.5.0
 
 - Bundles Unpoly 2.5.0 for the asset pipeline.
 
 
-## 2.4.1 (2021-09-30)
+## 2.4.1
 
 - Bundles Unpoly 2.4.1 for the asset pipeline.
 
 
-## 2.4.0 (2021-09-20)
+## 2.4.0
 
 - Bundles Unpoly 2.4.0 for the asset pipeline.
 
 
-## 2.3.0 (2021-08-31)
+## 2.3.0
 
 - New `up.safe_callback` helper prefixes a JavaScript callback with the response's CSP nonce. This lets callback attributes like `[up-on-loaded]` run with a [strict Content Security Policy](https://unpoly.com/learn/script-security).
 - Bundles Unpoly 2.3.0 for the asset pipeline.
 
 
-## 2.2.1 (2021-08-06)
+## 2.2.1
 
 - Bundles Unpoly 2.2.1 for the asset pipeline.
 
 
-## 2.2.0 (2021-08-05)
+## 2.2.0
 
 - First release from the separate unpoly-rails repository.
 - Supports Rails 3.2 again. Version 2.1.0 required Rails 4.2.
