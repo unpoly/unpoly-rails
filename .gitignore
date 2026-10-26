@@ -3,4 +3,5 @@
 .byebug_history
 /assets/unpoly/*.css
 /assets/unpoly/*.js
+/assets/unpoly/*.map
 /pkg
