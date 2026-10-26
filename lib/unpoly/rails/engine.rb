@@ -4,7 +4,7 @@ module Unpoly
       initializer 'unpoly-rails.deprecator' do |app|
         # Rails 7.1+ lets the app configure the deprecators of all libraries.
         if app.respond_to?(:deprecators)
-          app.deprecators[:unpoly_rails] = Unpoly::Rails.deprecator
+          app.deprecators[:unpoly_rails] = Util.deprecator
         end
       end
 

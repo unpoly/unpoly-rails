@@ -69,6 +69,20 @@ module Unpoly
           !blank?(value)
         end
 
+        # Rails 7.1+ gives each library its own deprecator, which the engine registers with the app.
+        # Rails 7.0 and older only have the global one.
+        def deprecator
+          @deprecator ||= if ActiveSupport.respond_to?(:deprecator)
+            ActiveSupport::Deprecation.new('4.0', 'unpoly-rails')
+          else
+            ActiveSupport::Deprecation
+          end
+        end
+
+        def deprecate(message)
+          deprecator.warn(message)
+        end
+
       end
     end
   end
