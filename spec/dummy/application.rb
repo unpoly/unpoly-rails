@@ -1,6 +1,10 @@
 require "rails/all"
 require 'sqlite3'
 
+# Like Bundler.require in a real app, load the gem before the app initializes,
+# so the engine's initializers run.
+require 'unpoly-rails'
+
 module Dummy
   APP_ROOT = File.expand_path("..", __FILE__).freeze
 

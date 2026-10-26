@@ -709,12 +709,26 @@ describe Unpoly::Rails::Controller, type: :request do
 
     it 'sets an `X-Up-Expire-Cache: *` header' do
       controller_eval do
-        ActiveSupport::Deprecation.silence do
+        Unpoly::Rails.deprecator.silence do
           up.cache.clear
         end
       end
 
       expect(response.headers['X-Up-Expire-Cache']).to eq('*')
+    end
+
+    it 'prints a deprecation warning through the deprecator of unpoly-rails' do
+      expect(Unpoly::Rails.deprecator).to receive(:warn).with(/up\.cache\.clear is deprecated/).and_call_original
+
+      controller_eval do
+        Unpoly::Rails.deprecator.silence do
+          up.cache.clear
+        end
+      end
+    end
+
+    it "registers the deprecator with the app, so the app's deprecation settings apply" do
+      expect(Rails.application.deprecators[:unpoly_rails]).to be(Unpoly::Rails.deprecator)
     end
 
   end
@@ -739,7 +753,7 @@ describe Unpoly::Rails::Controller, type: :request do
 
     it 'sets no useless `X-Up-Expire-Cache: false` header' do
       controller_eval do
-        ActiveSupport::Deprecation.silence do
+        Unpoly::Rails.deprecator.silence do
           up.cache.expire(false)
         end
       end
@@ -753,7 +767,7 @@ describe Unpoly::Rails::Controller, type: :request do
 
     it 'sets no useless `X-Up-Expire-Cache: false` header' do
       controller_eval do
-        ActiveSupport::Deprecation.silence do
+        Unpoly::Rails.deprecator.silence do
           up.cache.keep
         end
       end
@@ -783,7 +797,7 @@ describe Unpoly::Rails::Controller, type: :request do
 
     it 'sets no useless `X-Up-Evict-Cache: false` header' do
       controller_eval do
-        ActiveSupport::Deprecation.silence do
+        Unpoly::Rails.deprecator.silence do
           up.cache.evict(false)
         end
       end

@@ -95,7 +95,7 @@ module Unpoly
 
       def render_nothing(status: :no_content, deprecation: true)
         if deprecation
-          ActiveSupport::Deprecation.warn("up.render_nothing is deprecated. Use head(:no_content) instead.")
+          Unpoly::Rails.deprecator.warn("up.render_nothing is deprecated. Use head(:no_content) instead.")
         end
         self.target = ':none'
         controller.head(status)
@@ -379,14 +379,14 @@ module Unpoly
 
       def reload_from_time(deprecation: true)
         if deprecation
-          ActiveSupport::Deprecation.warn("up.reload_from_time is deprecated. Use conditional GETs instead: https://guides.rubyonrails.org/caching_with_rails.html#conditional-get-support")
+          Unpoly::Rails.deprecator.warn("up.reload_from_time is deprecated. Use conditional GETs instead: https://guides.rubyonrails.org/caching_with_rails.html#conditional-get-support")
         end
         reload_from_time_from_request || if_modified_since
       end
 
       def reload?(deprecation: true)
         if deprecation
-          ActiveSupport::Deprecation.warn("up.reload? is deprecated. Use conditional GETs instead: https://guides.rubyonrails.org/caching_with_rails.html#conditional-get-support")
+          Unpoly::Rails.deprecator.warn("up.reload? is deprecated. Use conditional GETs instead: https://guides.rubyonrails.org/caching_with_rails.html#conditional-get-support")
         end
         !!reload_from_time(deprecation: false)
       end

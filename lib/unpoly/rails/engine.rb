@@ -1,6 +1,13 @@
 module Unpoly
   module Rails
     class Engine < ::Rails::Engine
+      initializer 'unpoly-rails.deprecator' do |app|
+        # Rails 7.1+ lets the app configure the deprecators of all libraries.
+        if app.respond_to?(:deprecators)
+          app.deprecators[:unpoly_rails] = Unpoly::Rails.deprecator
+        end
+      end
+
       initializer 'unpoly-rails.assets' do |app|
         # Some projects may choose to completely remove the asset pipeline from the project.
         # In that case the config.assets accessor is not defined.
