@@ -13,6 +13,7 @@ Each release also bundles Unpoly's frontend files for the asset pipeline. If you
 - A `#hash` in a redirect URL is kept for fragment updates, e.g. `redirect_to post_path(@post, anchor: 'comments')`. The gem passes it as a `_up_location_hash` param and echoes it in the [`X-Up-Location`](https://unpoly.com/api/X-Up-Location) header after the redirect. Unpoly then reveals the element with that ID and shows the `#hash` in the address bar. Requires Unpoly 3.15 or later.
 - The gem now includes source maps for the bundled frontend files.
 - The gem's metadata links to unpoly.com, the changelog, the source code and the issue tracker.
+- Fix deprecated helpers like `up.cache.clear` or `up.render_nothing` raising a `NoMethodError` on Rails 7.2+. On Rails 7.1+, the gem's deprecation warnings now follow your app's deprecation settings.
 
 
 ## 3.14.3
