@@ -1,5 +1,7 @@
 require 'byebug'
 
+ENV['RAILS_ENV'] ||= 'test'
+
 require_relative 'dummy/application'
 # Rails.logger = ActiveSupport::Logger.new("spec/log/dummy-app.log")
 #

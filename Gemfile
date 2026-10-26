@@ -5,7 +5,7 @@ gem 'rake'
 # Gem under test
 gem 'unpoly-rails', path: '.'
 
-gem 'rails', '~>5.2'
+gem 'rails', '~> 8.1.0'
 gem 'sqlite3'
 # gem 'sass-rails', '~> 5.0'
 # gem 'haml-rails'

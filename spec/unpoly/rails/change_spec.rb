@@ -1,14 +1,14 @@
 describe Unpoly::Rails::Change do
 
   let :request do
-    OpenStruct.new(
+    Struct.new(:original_url, :headers, keyword_init: true).new(
       original_url: 'https://www.example.com',
       headers: {},
     )
   end
 
   let :response do
-    OpenStruct.new(
+    Struct.new(:headers, keyword_init: true).new(
       headers: {},
     )
   end
@@ -18,7 +18,7 @@ describe Unpoly::Rails::Change do
   end
 
   let :controller do
-    OpenStruct.new(request: request, response: response, params: params)
+    Struct.new(:request, :response, :params, keyword_init: true).new(request: request, response: response, params: params)
   end
 
   subject do

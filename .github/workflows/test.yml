@@ -15,8 +15,8 @@ jobs:
       - name: Check out unpoly-rails
         uses: actions/checkout@v4
 
-      # Nokogiri and sqlite3 are locked for the `ruby` platform only and compile
-      # from source on the first run. The bundler cache keeps later runs fast.
+      # Gemfile.lock includes the x86_64-linux platform, so Nokogiri and sqlite3
+      # install as precompiled gems. The bundler cache keeps later runs fast.
       - name: Install Ruby from .ruby-version
         uses: ruby/setup-ruby@v1
         with:

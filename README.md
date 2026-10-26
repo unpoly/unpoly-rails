@@ -568,8 +568,8 @@ Before you create a pull request, please have some discussion about the proposed
 
 ### Running tests
 
-- Install the Ruby version from `.ruby-version` (currently 2.7.8)
-- Install the Bundler version from `Gemfile.lock` by running `gem install bundler -v 2.4.22`
+- Install the Ruby version from `.ruby-version` (currently 3.4.12)
+- Install the Bundler version from `Gemfile.lock` by running `gem install bundler -v 2.6.9` (Ruby 3.4 already ships with it)
 - Install dependencies by running `bundle install`
 - Run `bundle exec rspec`
 

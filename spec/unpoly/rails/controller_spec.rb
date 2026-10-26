@@ -807,8 +807,7 @@ describe Unpoly::Rails::Controller, type: :request do
       options = { size: 'large', mode: 'drawer', target: '#overlay', dismissLabel: 'Close' }
 
       controller_eval do
-        up.layer.open(options)
-
+        up.layer.open(**options)
       end
 
       expect(response.headers['X-Up-Open-Layer']).to eq(options.to_json)
